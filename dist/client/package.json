@@ -1,0 +1,25 @@
+{
+  "main": "index.html",
+  "name": "remote-countdown",
+  "description": "A remotelly synchronised timer for controlling meeting times",
+  "version": "0.1.0",
+  "keywords": ["team", "remote", "timer", "sync", "meeting", "countdown", "collaboration"],
+  "window": {
+    "title": "remote-countdown",
+    "icon": "./hand-of-god.png.icns",
+    "toolbar": false,
+    "frame": false,
+    "width": 400,
+    "height": 180,
+    "min_width": 4,
+    "min_height": 1,
+    "show": true,
+    "position": "center",
+    "transparent": true,
+    "always-on-top": true,
+    "visible-on-all-workspaces": true
+  },
+  "webkit": {
+    "plugin": true
+  }
+}

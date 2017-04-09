@@ -1,9 +1,11 @@
 import Clock from '../clock-constructor/clock';
-//TODO leave session
-//TODO close session
+//TODO clock as component
+//TODO in connector, separate sessionHandler as component with own state and inputs with proper interface,
+// other component would be connectionHandler
+
 export default function(connector, $rootScope, $scope){
-    var self = this;
-    var clock = new Clock({tickTime: 300});
+    const self = this;
+    const clock = new Clock({tickTime: 300});
 
     $scope.model = {};
     //$scope.model.host = 'ws://guarded-eyrie-7081.herokuapp.com';
@@ -30,20 +32,11 @@ export default function(connector, $rootScope, $scope){
         //TODO review
         $scope.$applyAsync();
     });
-
-    this.sessionOwner = false;
-
-    this.disconnect = function(){
-        connector.closeConnection();
-    };
-
-    this.getConnectionState = () => {
-        return connector.getState();
-    };
-
     connector.onCommandReceived('CD', (countdownData) =>clock.applyCountdown(countdownData.seconds, new Date(countdownData.startTime), countdownData.pauses));
     connector.onCommandReceived('PAUSE', (pauseActionData) => clock.pause(new Date(pauseActionData.pauseTime)));
+    connector.onCommandReceived('PAUSE', () => {self.paused = true; $scope.$apply();});
     connector.onCommandReceived('RESUME', (resumeActionData) => clock.resume(new Date(resumeActionData.resumeTime)));
+    connector.onCommandReceived('RESUME', () => { self.paused = false; $scope.$apply();});
     connector.onCommandReceived('CLOSE_SESSION', ()=>{
       clock.stop();
 
@@ -53,17 +46,7 @@ export default function(connector, $rootScope, $scope){
       $scope.$apply();
     });
 
-    function resetJoinSessionInputValue(){
-      $scope.model.sessionToJoin = undefined;
-    }
-
-    function resetClock () {
-      self.timeString = '88:88';
-      self.differenceInSeconds = 0;
-      self.globalCountDown = 0;
-      self.percentage = undefined;
-    }
-
+    self.paused = false;
     this.connect = (host)=>{
         connector.connect(host).then((connection)=>{
             connection.onDisconnect(()=>{
@@ -77,41 +60,25 @@ export default function(connector, $rootScope, $scope){
             console.log(err);
         });
     };
+    this.joinSession = connector.joinSession;
+    this.createSession = (sessionToCreate) => connector.createSession(sessionToCreate || self.sessionToCreate);
+    this.closeSession = connector.closeSession;
+    this.leaveSession = connector.leaveSession;
+    this.startTimer = (seconds) => connector.sendCommand('CD', {seconds:seconds});
+    this.pause = () => connector.sendCommand('PAUSE');
+    this.resume = () => connector.sendCommand('RESUME');
+    this.disconnect = connector.closeConnection;
+    this.getConnectionState = connector.getState;
+    this.getTimeColor = () => "hsl(" + (self.percentage<0?0:self.percentage) + ",100%,36%)";
 
-    this.paused = false;
+  function resetJoinSessionInputValue(){
+    $scope.model.sessionToJoin = undefined;
+  }
 
-    this.joinSession = (sessionId) => {
-        connector.joinSession(sessionId);
-    };
-
-    this.createSession = (sessionToCreate) => {
-        connector.createSession(sessionToCreate || self.sessionToCreate);
-        self.sessionOwner = true;//TODO should it be on the websocket success?
-    };
-
-    this.closeSession = () => {
-        connector.closeSession();
-    };
-
-    this.leaveSession = () => {
-        connector.leaveSession();
-    };
-
-    this.startTimer = function(seconds){
-        connector.sendCommand('CD', {seconds:seconds});
-    };
-
-    this.pause = function(){
-        connector.sendCommand('PAUSE');
-        self.paused = true;//TODO this should not be here, in the command received, ?
-    };
-
-    this.resume = function(){
-        connector.sendCommand('RESUME');
-        self.paused = false; //TODO shoild it be once commemandReceived ?
-    };
-
-    this.getTimeColor = function(){
-        return "hsl(" + (self.percentage<0?0:self.percentage) + ",100%,36%)";
-    };
+  function resetClock () {
+    self.timeString = '88:88';
+    self.differenceInSeconds = 0;
+    self.globalCountDown = 0;
+    self.percentage = undefined;
+  }
 }

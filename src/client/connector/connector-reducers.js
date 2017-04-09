@@ -34,6 +34,7 @@ export default (state = {}, action) => {
       return Object.assign({}, state, {
         activeSessionId: action.data.sessionId,
         sessionToCreate: action.data.sessionId,
+        sessionOwner: true,
       });
     case 'SESSION_JOIN_SEND':
       return Object.assign({}, state, {

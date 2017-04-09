@@ -13,7 +13,7 @@ export default function ($q) {
   ));
   const commandReceivedCallbacks = {};
 
-  function addCommandReceivedCallback(command, callback){
+  function addCommandReceivedCallback(command, callback) {
     if (!commandReceivedCallbacks[command]) {
       commandReceivedCallbacks[command] = [callback];
     } else {
@@ -28,7 +28,9 @@ export default function ($q) {
   }
 
   function closeConnection() {
-    return store.dispatch(connectorActions.closeConnection(store.getState().host, store.getState().socket));
+    return store.dispatch(
+      connectorActions.closeConnection(store.getState().host, store.getState().socket)
+    );
   }
 
   function createSession(sessionId) {
@@ -42,7 +44,8 @@ export default function ($q) {
   }
 
   function closeSession() {
-    //TODO do we always need to do store.egtState().socket? shouldn't it be in other place or anything?
+    //TODO do we always need to do store.egtState().socket?
+    // shouldn't it be in other place or anything?
     return store.dispatch(connectorActions.closeSession(store.getState().socket));
   }
 
@@ -53,7 +56,7 @@ export default function ($q) {
   function sendCommand(command, data) {
     return store.dispatch(
       connectorActions.sendCommand(
-        Object.assign({}, data,  { command: command }), store.getState().socket
+        Object.assign({}, data, { command: command }), store.getState().socket
       )
     );
   }

@@ -77,8 +77,6 @@ export default function(connector, $rootScope, $scope){
         }).then(()=>{}, function(err){
             console.log(err);
         });
-
-
     };
 
     this.paused = false;

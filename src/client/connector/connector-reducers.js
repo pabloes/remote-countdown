@@ -21,6 +21,7 @@ export default (state = {}, action) => {
         activeSessionId: undefined,
         host: action.host,
         socket: null,
+        sessionOwner: false,
       });
     case 'SESSION_CREATE_SEND':
       return Object.assign({}, state, {
@@ -51,6 +52,7 @@ export default (state = {}, action) => {
     case 'COMMAND_RECEIVED_CLOSE_SESSION':
       return Object.assign({}, state, {
         activeSessionId: undefined,
+        sessionOwner: undefined,
       });
     default:
       return state;

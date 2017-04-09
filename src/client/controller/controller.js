@@ -21,9 +21,15 @@ export default function(connector, $rootScope, $scope){
         self.percentage = Math.floor(differenceInSeconds * 100 / globalCountDown);
         $scope.$apply();
     });
+
     connector.subscribe(function(connectionState){
-        console.log(connectionState);
+        //TODO review if it's the best way
+        if(connectionState.sessionToCreate){
+            self.sessionToCreate = connectionState.sessionToCreate;
+            $scope.$apply();
+        }
     });
+
     this.sessionOwner = false;
 
     this.disconnect = function(){

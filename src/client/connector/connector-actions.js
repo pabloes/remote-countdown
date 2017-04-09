@@ -7,7 +7,6 @@ export const sendConnection = (host, socket) => {
 };
 
 export const connectionSuccess = (host, socket) => {
-console.log(socket.aaa)
   socket.onmesage = (response) => {
     console.log('MESSAGE', response);
   };
@@ -49,9 +48,9 @@ export const joinSessionSend = (sessionId, socket) => {
 };
 
 export const commandReceived = (data) => {
-  //TODO needs applyAsync?
   return {
-    type: 'COMMAND_' + data.command,
+    type: 'COMMAND_RECEIVED_' + data.command,
+    data: data,
   };
 };
 

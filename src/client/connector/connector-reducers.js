@@ -38,11 +38,10 @@ export default (state = {}, action) => {
         sessionId: action.sessionId,
         sessionOwner: false
       });
-    case 'COMMAND_NEW':
+    case 'COMMAND_RECEIVED_NEW':
       return Object.assign({}, state, {
-        activeSessionId: action.sessionId,
-        sessionToCreate: action.sessionId,
-        sessionId: action.sessionId,
+        activeSessionId: action.data.sessionId,
+        sessionToCreate: action.data.sessionId,
       });
     default:
       return state;

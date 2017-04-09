@@ -21,23 +21,22 @@ export default function(connector, $rootScope, $scope){
         self.percentage = Math.floor(differenceInSeconds * 100 / globalCountDown);
         $scope.$apply();
     });
-
-    self.state = {
-        connected:false,
-        connecting:false,
-        joining:false,
-        creating:false
-    };
-
+    connector.subscribe(function(connectionState){
+        console.log(connectionState);
+    });
     this.sessionOwner = false;
 
     this.disconnect = function(){
-        self.socket.close();
+        connector.closeConnection();
     };
+
+    this.getConnectionState = () => {
+        return connector.getState();
+    };
+
     this.connect = (host)=>{
         connector.connect(host, {
             onSessionCreate:function(sessionId){
-                self.state.creating = false;
                 self.activeSessionId = sessionId;
                 self.sessionToCreate = sessionId;
                 $scope.$apply();
@@ -56,7 +55,6 @@ export default function(connector, $rootScope, $scope){
                 }
             },
             onSessionJoin:function(sessionId){
-                self.state.joining = false;
                 self.activeSessionId = sessionId;
                 $scope.$apply();
             },
@@ -84,17 +82,10 @@ export default function(connector, $rootScope, $scope){
 
                 $scope.$apply();
             }
-        }).then(onConnect, function(err){
+        }).then(()=>{}, function(err){
             console.log(err);
-            self.state.connecting = true;
-            self.state.connected = false;
         });
 
-        function resetConnection(){
-            self.state.connected = false;
-            self.state.connecting = false;
-            self.socket = undefined;
-        }
 
         function resetClock(){
             self.timeString = '88:88';
@@ -114,13 +105,11 @@ export default function(connector, $rootScope, $scope){
     this.paused = false;
 
     this.joinSession = (sessionId) => {
-        self.state.joining = true;
         connector.joinSession(self.socket, sessionId);
     };
 
-    this.createSession = (sessionId) => {
-        self.state.creating = true;
-        connector.createSession(self.socket, self.sessionToCreate);
+    this.createSession = (sessionToCreate) => {
+        connector.createSession(sessionToCreate || self.sessionToCreate, self.socket);
         self.sessionOwner = true;//TODO should it be on the websocket success?
     };
 
@@ -154,10 +143,4 @@ export default function(connector, $rootScope, $scope){
     this.getTimeColor = function(){
         return "hsl(" + (self.percentage<0?0:self.percentage) + ",100%,36%)";
     };
-
-    function onConnect(connection){
-        self.state.connected = true;
-        self.socket = connection.socket;
-    }
-
 }

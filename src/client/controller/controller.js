@@ -27,6 +27,7 @@ export default function(connector, $rootScope, $scope){
         if(connectionState.sessionToCreate){
             self.sessionToCreate = connectionState.sessionToCreate;
         }
+        //TODO review
         $scope.$applyAsync();
     });
 
@@ -120,7 +121,7 @@ export default function(connector, $rootScope, $scope){
     };
 
     this.closeSession = () => {
-        connector.closeSession(self.socket);
+        connector.closeSession();
     };
 
     this.leaveSession = () => {

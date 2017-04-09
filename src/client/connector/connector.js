@@ -29,8 +29,8 @@ export default function ($q) {
     return store.dispatch(connectorActions.joinSession(sessionId, store.getState().socket));
   }
 
-  function closeSession(){
-    //TODO we always need to do store.egtState().socket? shouldn't it be in other place or anything?
+  function closeSession() {
+    //TODO do we always need to do store.egtState().socket? shouldn't it be in other place or anything?
     return store.dispatch(connectorActions.closeSession(store.getState().socket));
   }
 
@@ -43,6 +43,7 @@ export default function ($q) {
     closeConnection: closeConnection,
     createSession: createSession,
     joinSession: joinSession,
+    closeSession: closeSession,
     getState: store.getState,
     subscribe: (callback) => {
       return store.subscribe(() => {

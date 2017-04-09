@@ -65,6 +65,7 @@ export default {
   connect: connectAsyncMiddleware,
   closeConnection: closeConnection,
   createSession: createSessionSend,
+  closeSession: closeSessionSend,
   joinSession: joinSessionSend,
 };
 

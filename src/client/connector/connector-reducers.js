@@ -56,6 +56,10 @@ export default (state = {}, action) => {
         creatingSession: false,
         sessionOwner: false,
       });
+    case 'COMMAND_RECEIVED_CLOSE_SESSION':
+      return Object.assign({}, state, {
+        activeSessionId: undefined,
+      });
     default:
       return state;
   };

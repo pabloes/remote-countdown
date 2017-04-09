@@ -28,13 +28,6 @@ export default (state = {}, action) => {
         activeSessionId: undefined,
         sessionOwner: true,//TODO should it be placed in the success?
       });
-    case 'SESSION_JOIN_SEND':
-      return Object.assign({}, state, {
-        creatingSession: false,
-        joiningSession: true,
-        activeSessionId: undefined,
-        sessionOwner: false,
-      });
     case 'SESSION_CREATE_RECEIVED':
       return Object.assign({}, state, {
         creatingSession: false,
@@ -48,6 +41,20 @@ export default (state = {}, action) => {
       return Object.assign({}, state, {
         activeSessionId: action.data.sessionId,
         sessionToCreate: action.data.sessionId,
+      });
+    case 'SESSION_JOIN_SEND':
+      return Object.assign({}, state, {
+        creatingSession: false,
+        joiningSession: true,
+        activeSessionId: undefined,
+        sessionOwner: false,
+      });
+    case 'COMMAND_RECEIVED_JOIN_SUCCESS':
+      return Object.assign({}, state, {
+        activeSessionId: action.data.sessionId,
+        joiningSession: false,
+        creatingSession: false,
+        sessionOwner: false,
       });
     default:
       return state;

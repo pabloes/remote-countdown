@@ -26,7 +26,12 @@ export default function ($q) {
 
   function joinSession(sessionId) {
     //TODO return a promise?
-    return store.dispatch(connectorActions.createSession(sessionId, store.getState().socket));
+    return store.dispatch(connectorActions.joinSession(sessionId, store.getState().socket));
+  }
+
+  function closeSession(){
+    //TODO we always need to do store.egtState().socket? shouldn't it be in other place or anything?
+    return store.dispatch(connectorActions.closeSession(store.getState().socket));
   }
 
   function commandReceived(data){

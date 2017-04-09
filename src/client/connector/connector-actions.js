@@ -46,6 +46,14 @@ export const joinSessionSend = (sessionId, socket) => {
   };
 };
 
+export const closeSessionSend = (socket) => {
+  socket.send(JSON.stringify({ command: 'CLOSE_SESSION' }));
+
+  return {
+    type: 'SESSION_CLOSE_SEND',
+  };
+};
+
 export const commandReceived = (data) => {
   return {
     type: 'COMMAND_RECEIVED_' + data.command,
@@ -57,7 +65,7 @@ export default {
   connect: connectAsyncMiddleware,
   closeConnection: closeConnection,
   createSession: createSessionSend,
-  joinSessionSend: joinSessionSend,
+  joinSession: joinSessionSend,
 };
 
 function connectAsyncMiddleware(host, $q) {

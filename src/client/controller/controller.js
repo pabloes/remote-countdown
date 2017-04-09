@@ -26,8 +26,8 @@ export default function(connector, $rootScope, $scope){
         //TODO review if it's the best way
         if(connectionState.sessionToCreate){
             self.sessionToCreate = connectionState.sessionToCreate;
-            $scope.$apply();
         }
+        $scope.$applyAsync();
     });
 
     this.sessionOwner = false;
@@ -111,7 +111,7 @@ export default function(connector, $rootScope, $scope){
     this.paused = false;
 
     this.joinSession = (sessionId) => {
-        connector.joinSession(self.socket, sessionId);
+        connector.joinSession(sessionId);
     };
 
     this.createSession = (sessionToCreate) => {

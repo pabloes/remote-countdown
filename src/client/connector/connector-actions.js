@@ -1,3 +1,5 @@
+import _noop from 'lodash/noop';
+
 export const sendConnection = (host, socket) => {
   return {
     type: 'CONNECT_SEND',
@@ -91,18 +93,22 @@ export default {
 function connectAsyncMiddleware(host, $q, commandReceivedCallbacks) {
   //TODO not the proper way to pass callback here?
   return function (dispatch, getState) {
-    let ws = new WebSocket(host);
-
     const defer = $q.defer();
-    dispatch(sendConnection(host, ws));
+    const setDisconnectCallback = (callback) => {
+      onDisconnectCallback = callback;
+    };
+    let ws = new WebSocket(host);
+    let onDisconnectCallback = _noop;
 
+    dispatch(sendConnection(host, ws));
     ws.onopen = () => {
-      defer.resolve({ socket: ws });
+      defer.resolve({ socket: ws, onDisconnect:setDisconnectCallback });
       dispatch(connectionSuccess(host, ws));
     };
 
     ws.onclose = () => {
       dispatch(closeConnection(host, ws));
+      onDisconnectCallback();
     };
 
     ws.onerror = function (event) {

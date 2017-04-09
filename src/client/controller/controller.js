@@ -64,17 +64,16 @@ export default function(connector, $rootScope, $scope){
       self.percentage = undefined;
     }
 
-//CD, PAUSE, RESUME
     this.connect = (host)=>{
-        connector.connect(host, {
-            onConnectionClose:function(){
-                clock.stop();
+        connector.connect(host).then((connection)=>{
+            connection.onDisconnect(()=>{
+              clock.stop();
 
-                resetClock();
-                resetJoinSessionInputValue();
-                $scope.$apply();
-            },
-        }).then(()=>{}, function(err){
+              resetClock();
+              resetJoinSessionInputValue();
+              $scope.$apply();
+            });
+        }, function(err){
             console.log(err);
         });
     };

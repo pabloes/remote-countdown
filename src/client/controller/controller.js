@@ -40,29 +40,24 @@ export default function(connector, $rootScope, $scope){
     this.getConnectionState = () => {
         return connector.getState();
     };
+    var connectorCallbacks = {};
 
+    connectorCallbacks['CD'] = function(countdownData){
+      var timerDataFromServer = {
+        serverCountDown: countdownData.seconds,
+        serverTimeZone: countdownData.timeZoneOffset,
+        serverInitialTime: new Date(countdownData.startTime)
+      };
+      clock.applyCountdown(timerDataFromServer.serverCountDown, timerDataFromServer.serverInitialTime, countdownData.pauses);
+    };
+
+    connector.onCommandReceived('CD', connectorCallbacks['CD']);
+//CD, PAUSE, RESUME
     this.connect = (host)=>{
         connector.connect(host, {
             onSessionCreate:function(sessionId){
                 self.activeSessionId = sessionId;
                 self.sessionToCreate = sessionId;
-                $scope.$apply();
-            },
-            onContDown:function(countdownData){
-                var timerDataFromServer = deserializeTimerDataFromServer(countdownData);
-                clock.applyCountdown(timerDataFromServer.serverCountDown, timerDataFromServer.serverInitialTime, countdownData.pauses);
-
-                function deserializeTimerDataFromServer(data) {
-                    //TODO move to serverMessage
-                    return {
-                        serverCountDown: data.seconds,
-                        serverTimeZone: data.timeZoneOffset,
-                        serverInitialTime: new Date(data.startTime)
-                    }
-                }
-            },
-            onSessionJoin:function(sessionId){
-                self.activeSessionId = sessionId;
                 $scope.$apply();
             },
             onPause:function(pauseDateString){
@@ -129,8 +124,7 @@ export default function(connector, $rootScope, $scope){
     };
 
     this.startTimer = function(seconds){
-        //self.socket.send("cd:" + seconds);
-        self.socket.send(JSON.stringify({command:'CD', seconds:seconds}))
+        connector.sendCommand('CD', {seconds:seconds});
     };
 
     this.pause = function(){

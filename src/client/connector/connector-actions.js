@@ -69,6 +69,15 @@ export const commandReceived = (data) => {
   };
 };
 
+export const sendCommand = (data, socket) => {
+  socket.send(JSON.stringify(data));
+
+  return {
+    type: 'COMMAND_SEND_' + data.command,
+    data: data,
+  };
+};
+
 export default {
   connect: connectAsyncMiddleware,
   closeConnection: closeConnection,
@@ -76,9 +85,11 @@ export default {
   closeSession: closeSessionSend,
   joinSession: joinSessionSend,
   leaveSession: leaveSessionSend,
+  sendCommand: sendCommand,
 };
 
-function connectAsyncMiddleware(host, $q) {
+function connectAsyncMiddleware(host, $q, commandReceivedCallbacks) {
+  //TODO not the proper way to pass callback here?
   return function (dispatch, getState) {
     let ws = new WebSocket(host);
 
@@ -99,7 +110,9 @@ function connectAsyncMiddleware(host, $q) {
     };
 
     ws.onmessage = function (response) {
-      dispatch(commandReceived(JSON.parse(response.data)));
+      const data = JSON.parse(response.data);
+      (commandReceivedCallbacks[data.command] || []).forEach((callback) => callback(data));
+      dispatch(commandReceived(data));
     };
 
     return defer.promise;

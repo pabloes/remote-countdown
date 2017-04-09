@@ -4,15 +4,24 @@ import connectorActions from './connector-actions';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 const loggerMiddleware = createLogger();
+import _pull from 'lodash/pull';
 
 export default function ($q) {
   let store = createStore(connectorReducers, applyMiddleware(
     thunkMiddleware, // lets us dispatch() functions
     loggerMiddleware,
   ));
+  const commandReceivedCallbacks = {
+    CD: [],
+  };
+
+  function addCommandReceivedCallback(command, callback){
+    commandReceivedCallbacks[command].push(callback);
+    return () => _pull(commandReceivedCallbacks[command], callback);
+  }
 
   function connect(host) {
-    return store.dispatch(connectorActions.connect(host, $q));
+    return store.dispatch(connectorActions.connect(host, $q, commandReceivedCallbacks));
   }
 
   function closeConnection() {
@@ -34,12 +43,16 @@ export default function ($q) {
     return store.dispatch(connectorActions.closeSession(store.getState().socket));
   }
 
-  function commandReceived(data) {
-    return store.dispatch(connectorActions.commandReceived(data));
-  }
-
   function leaveSession() {
     return store.dispatch(connectorActions.leaveSession(store.getState().socket));
+  }
+
+  function sendCommand(command, data) {
+    return store.dispatch(
+      connectorActions.sendCommand(
+        Object.assign({}, data,  { command: command }), store.getState().socket
+      )
+    );
   }
 
   return {
@@ -49,7 +62,9 @@ export default function ($q) {
     joinSession: joinSession,
     closeSession: closeSession,
     leaveSession: leaveSession,
+    sendCommand: sendCommand,
     getState: store.getState,
+    onCommandReceived: addCommandReceivedCallback,
     subscribe: (callback) => store.subscribe(() => callback(store.getState())),
   };
 }

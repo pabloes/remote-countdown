@@ -44,6 +44,25 @@ export default function(connector, $rootScope, $scope){
     connector.onCommandReceived('CD', (countdownData) =>clock.applyCountdown(countdownData.seconds, new Date(countdownData.startTime), countdownData.pauses));
     connector.onCommandReceived('PAUSE', (pauseActionData) => clock.pause(new Date(pauseActionData.pauseTime)));
     connector.onCommandReceived('RESUME', (resumeActionData) => clock.resume(new Date(resumeActionData.resumeTime)));
+    connector.onCommandReceived('CLOSE_SESSION', ()=>{
+      clock.stop();
+
+      resetClock();
+      resetJoinSessionInputValue();
+
+      $scope.$apply();
+    });
+
+    function resetJoinSessionInputValue(){
+      $scope.model.sessionToJoin = undefined;
+    }
+
+    function resetClock () {
+      self.timeString = '88:88';
+      self.differenceInSeconds = 0;
+      self.globalCountDown = 0;
+      self.percentage = undefined;
+    }
 
 //CD, PAUSE, RESUME
     this.connect = (host)=>{
@@ -55,29 +74,11 @@ export default function(connector, $rootScope, $scope){
                 resetJoinSessionInputValue();
                 $scope.$apply();
             },
-            onCloseSession:function(){
-                clock.stop();
-
-                resetClock();
-                resetJoinSessionInputValue();
-
-                $scope.$apply();
-            }
         }).then(()=>{}, function(err){
             console.log(err);
         });
 
 
-        function resetClock(){
-            self.timeString = '88:88';
-            self.differenceInSeconds = 0;
-            self.globalCountDown = 0;
-            self.percentage = undefined;
-        }
-
-        function resetJoinSessionInputValue(){
-          $scope.model.sessionToJoin = undefined;
-        }
     };
 
     this.paused = false;

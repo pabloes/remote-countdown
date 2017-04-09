@@ -111,8 +111,8 @@ function connectAsyncMiddleware(host, $q, commandReceivedCallbacks) {
 
     ws.onmessage = function (response) {
       const data = JSON.parse(response.data);
-      (commandReceivedCallbacks[data.command] || []).forEach((callback) => callback(data));
       dispatch(commandReceived(data));
+      (commandReceivedCallbacks[data.command] || []).forEach((callback) => callback(data));
     };
 
     return defer.promise;

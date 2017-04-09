@@ -40,47 +40,26 @@ export default function(connector, $rootScope, $scope){
     this.getConnectionState = () => {
         return connector.getState();
     };
-    var connectorCallbacks = {};
 
-    connectorCallbacks['CD'] = function(countdownData){
-      var timerDataFromServer = {
-        serverCountDown: countdownData.seconds,
-        serverTimeZone: countdownData.timeZoneOffset,
-        serverInitialTime: new Date(countdownData.startTime)
-      };
-      clock.applyCountdown(timerDataFromServer.serverCountDown, timerDataFromServer.serverInitialTime, countdownData.pauses);
-    };
+    connector.onCommandReceived('CD', (countdownData) =>clock.applyCountdown(countdownData.seconds, new Date(countdownData.startTime), countdownData.pauses));
+    connector.onCommandReceived('PAUSE', (pauseActionData) => clock.pause(new Date(pauseActionData.pauseTime)));
+    connector.onCommandReceived('RESUME', (resumeActionData) => clock.resume(new Date(resumeActionData.resumeTime)));
 
-    connector.onCommandReceived('CD', connectorCallbacks['CD']);
 //CD, PAUSE, RESUME
     this.connect = (host)=>{
         connector.connect(host, {
-            onSessionCreate:function(sessionId){
-                self.activeSessionId = sessionId;
-                self.sessionToCreate = sessionId;
-                $scope.$apply();
-            },
-            onPause:function(pauseDateString){
-                //TODO in client, instead of doing always new Date for all ISOString, do it with a global interceptor
-                clock.pause(new Date(pauseDateString));
-            },
-            onResume:function(resumeDateString){
-                clock.resume(new Date(resumeDateString));
-            },
             onConnectionClose:function(){
                 clock.stop();
 
-                resetConnection();
                 resetClock();
-                resetSession();
-
+                resetJoinSessionInputValue();
                 $scope.$apply();
             },
             onCloseSession:function(){
                 clock.stop();
 
                 resetClock();
-                resetSession();
+                resetJoinSessionInputValue();
 
                 $scope.$apply();
             }
@@ -96,11 +75,8 @@ export default function(connector, $rootScope, $scope){
             self.percentage = undefined;
         }
 
-        function resetSession(){
-            self.session = undefined;
-            self.activeSessionId = undefined;
-            $scope.model.sessionToJoin = undefined;
-            self.sessionOwner = false;
+        function resetJoinSessionInputValue(){
+          $scope.model.sessionToJoin = undefined;
         }
     };
 
@@ -128,17 +104,13 @@ export default function(connector, $rootScope, $scope){
     };
 
     this.pause = function(){
-        console.log("socket send pause");
-       // self.socket.send('pause:' + JSON.stringify(self.pauses));
-        self.socket.send(JSON.stringify({command:'PAUSE'}));
-        self.paused = true;
+        connector.sendCommand('PAUSE');
+        self.paused = true;//TODO this should not be here, in the command received, ?
     };
 
     this.resume = function(){
-        console.log("socket send resume");
-        //self.socket.send('resume:' + JSON.stringify(self.pauses));
-        self.socket.send(JSON.stringify({command:'RESUME'}));
-        self.paused = false;
+        connector.sendCommand('RESUME');
+        self.paused = false; //TODO shoild it be once commemandReceived ?
     };
 
     this.getTimeColor = function(){

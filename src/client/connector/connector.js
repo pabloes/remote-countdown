@@ -11,12 +11,15 @@ export default function ($q) {
     thunkMiddleware, // lets us dispatch() functions
     loggerMiddleware,
   ));
-  const commandReceivedCallbacks = {
-    CD: [],
-  };
+  const commandReceivedCallbacks = {};
 
   function addCommandReceivedCallback(command, callback){
-    commandReceivedCallbacks[command].push(callback);
+    if (!commandReceivedCallbacks[command]) {
+      commandReceivedCallbacks[command] = [callback];
+    } else {
+      commandReceivedCallbacks[command].push(callback);
+    }
+
     return () => _pull(commandReceivedCallbacks[command], callback);
   }
 

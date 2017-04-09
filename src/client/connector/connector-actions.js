@@ -54,6 +54,14 @@ export const closeSessionSend = (socket) => {
   };
 };
 
+export const leaveSessionSend = (socket) => {
+  socket.send(JSON.stringify({ command: 'LEAVE_SESSION' }));
+
+  return {
+    type: 'LEAVE_SESSION',
+  };
+};
+
 export const commandReceived = (data) => {
   return {
     type: 'COMMAND_RECEIVED_' + data.command,
@@ -67,6 +75,7 @@ export default {
   createSession: createSessionSend,
   closeSession: closeSessionSend,
   joinSession: joinSessionSend,
+  leaveSession: leaveSessionSend,
 };
 
 function connectAsyncMiddleware(host, $q) {

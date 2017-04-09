@@ -125,7 +125,7 @@ export default function(connector, $rootScope, $scope){
     };
 
     this.leaveSession = () => {
-        connector.leaveSession(self.socket, self.activeSessionId);
+        connector.leaveSession();
     };
 
     this.startTimer = function(seconds){

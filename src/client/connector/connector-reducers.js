@@ -18,6 +18,7 @@ export default (state = {}, action) => {
       return Object.assign({}, state, {
         connecting: false,
         connected: false,
+        activeSessionId: undefined,
         host: action.host,
         socket: null,
       });
@@ -27,15 +28,6 @@ export default (state = {}, action) => {
         joiningSession: false,
         activeSessionId: undefined,
         sessionOwner: true,//TODO should it be placed in the success?
-      });
-    case 'SESSION_CREATE_RECEIVED':
-      return Object.assign({}, state, {
-        creatingSession: false,
-        joiningSession: false,
-        activeSessionId: action.sessionId,
-        sessionToCreate: action.sessionId,
-        sessionId: action.sessionId,
-        sessionOwner: false
       });
     case 'COMMAND_RECEIVED_NEW':
       return Object.assign({}, state, {

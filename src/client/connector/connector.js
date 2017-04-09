@@ -34,8 +34,12 @@ export default function ($q) {
     return store.dispatch(connectorActions.closeSession(store.getState().socket));
   }
 
-  function commandReceived(data){
+  function commandReceived(data) {
     return store.dispatch(connectorActions.commandReceived(data));
+  }
+
+  function leaveSession() {
+    return store.dispatch(connectorActions.leaveSession(store.getState().socket));
   }
 
   return {
@@ -44,6 +48,7 @@ export default function ($q) {
     createSession: createSession,
     joinSession: joinSession,
     closeSession: closeSession,
+    leaveSession: leaveSession,
     getState: store.getState,
     subscribe: (callback) => {
       return store.subscribe(() => {

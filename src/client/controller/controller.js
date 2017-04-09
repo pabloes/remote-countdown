@@ -85,7 +85,7 @@ export default function(connector, $rootScope, $scope){
     };
 
     this.createSession = (sessionToCreate) => {
-        connector.createSession(sessionToCreate || self.sessionToCreate, self.socket);
+        connector.createSession(sessionToCreate || self.sessionToCreate);
         self.sessionOwner = true;//TODO should it be on the websocket success?
     };
 

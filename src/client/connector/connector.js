@@ -50,10 +50,6 @@ export default function ($q) {
     closeSession: closeSession,
     leaveSession: leaveSession,
     getState: store.getState,
-    subscribe: (callback) => {
-      return store.subscribe(() => {
-        callback(store.getState());
-      });
-    },
+    subscribe: (callback) => store.subscribe(() => callback(store.getState())),
   };
 }

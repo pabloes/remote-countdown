@@ -20,6 +20,12 @@ export default function ($q) {
   }
 
   function createSession(sessionId) {
+    //TODO return a promise?
+    return store.dispatch(connectorActions.createSession(sessionId, store.getState().socket));
+  }
+
+  function joinSession(sessionId) {
+    //TODO return a promise?
     return store.dispatch(connectorActions.createSession(sessionId, store.getState().socket));
   }
 
@@ -31,6 +37,7 @@ export default function ($q) {
     connect: connect,
     closeConnection: closeConnection,
     createSession: createSession,
+    joinSession: joinSession,
     getState: store.getState,
     subscribe: (callback) => {
       return store.subscribe(() => {

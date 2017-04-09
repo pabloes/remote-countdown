@@ -31,7 +31,6 @@ export const closeConnection = (host, socket) => {
 };
 
 export const createSessionSend = (sessionId, socket) => {
-  console.log(sessionId);
   socket.send(JSON.stringify({ command: 'CREATE', sessionId: sessionId }));
 
   return {
@@ -58,6 +57,7 @@ export default {
   connect: connectAsyncMiddleware,
   closeConnection: closeConnection,
   createSession: createSessionSend,
+  joinSessionSend: joinSessionSend,
 };
 
 function connectAsyncMiddleware(host, $q) {

@@ -26,8 +26,14 @@ export default (state = {}, action) => {
         creatingSession: true,
         joiningSession: false,
         activeSessionId: undefined,
-        sessionId: undefined,
         sessionOwner: true,//TODO should it be placed in the success?
+      });
+    case 'SESSION_JOIN_SEND':
+      return Object.assign({}, state, {
+        creatingSession: false,
+        joiningSession: true,
+        activeSessionId: undefined,
+        sessionOwner: false,
       });
     case 'SESSION_CREATE_RECEIVED':
       return Object.assign({}, state, {

@@ -10,51 +10,51 @@
 <div class="body-wrapper" ng-controller="godmodoro as godmodoro">
     <div id="main">
         <div id="content" ng-bind="godmodoro.timeString" ng-class="{blink: godmodoro.differenceInSeconds < 0}" ng-style="{color:godmodoro.getTimeColor()}"></div>
-        <div id="main-controls" ng-if="godmodoro.sessionOwner">
-            <input ng-disabled="!godmodoro.state.connected || godmodoro.paused || !godmodoro.sessionOwner" id="button-start-1min" class="control control--time-button" type="button" ng-click="godmodoro.startTimer(60)" value="1 Min"/>
-            <input ng-disabled="!godmodoro.state.connected || godmodoro.paused || !godmodoro.sessionOwner" id="button-start-5min" class="control control--time-button" type="button" ng-click="godmodoro.startTimer(5*60)" value="5 Min"/>
+        <div id="main-controls" ng-if="godmodoro.getConnectionState().sessionOwner">
+            <input ng-disabled="!godmodoro.getConnectionState().connected || godmodoro.paused || !godmodoro.getConnectionState().sessionOwner" id="button-start-1min" class="control control--time-button" type="button" ng-click="godmodoro.startTimer(60)" value="1 Min"/>
+            <input ng-disabled="!godmodoro.getConnectionState().connected || godmodoro.paused || !godmodoro.getConnectionState().sessionOwner" id="button-start-5min" class="control control--time-button" type="button" ng-click="godmodoro.startTimer(5*60)" value="5 Min"/>
             <input id="text-custom-time" ng-model="model.typedTime" class="control" type="text" ng-init="model.typedTime = 10"/>
-            <input ng-disabled="!godmodoro.state.connected || godmodoro.paused || !godmodoro.sessionOwner" id="button-start-custom" class="control control&#45;&#45;time-button control-time-button&#45;&#45;play" type="button" ng-click="godmodoro.startTimer(model.typedTime*60)"
+            <input ng-disabled="!godmodoro.getConnectionState().connected || godmodoro.paused || !godmodoro.getConnectionState().sessionOwner" id="button-start-custom" class="control control&#45;&#45;time-button control-time-button&#45;&#45;play" type="button" ng-click="godmodoro.startTimer(model.typedTime*60)"
                    value=">" />
-            <input ng-disabled="!godmodoro.state.connected || !godmodoro.sessionOwner" id="button-pause" type="button" ng-click="godmodoro.paused?godmodoro.resume():godmodoro.pause()" value="{{godmodoro.paused?'resume':'pause'}}" />
+            <input ng-disabled="!godmodoro.getConnectionState().connected || !godmodoro.getConnectionState().sessionOwner" id="button-pause" type="button" ng-click="godmodoro.paused?godmodoro.resume():godmodoro.pause()" value="{{godmodoro.paused?'resume':'pause'}}" />
 
         </div>
     </div>
     <div class="control-wrapper table">
         <div id="server" class="table-row">
             <div class="table-cell">
-                <input ng-click="godmodoro.connect(model.host)" ng-disabled="!model.host" ng-show="!godmodoro.state.connected" id="button-connect" class="control" type="button" value="{{self.state.connecting?'Connecting':'Connect'}}"/>
-                <input ng-click="godmodoro.disconnect(model.host)" ng-show="godmodoro.state.connected" id="button-disconnect" class="control" type="button" value="Disconnect"/>
+                <input ng-click="godmodoro.connect(model.host)" ng-disabled="!model.host || godmodoro.getConnectionState().connecting" ng-show="!godmodoro.getConnectionState().connected" id="button-connect" class="control" type="button" value="{{godmodoro.getConnectionState().connecting?'Connecting':'Connect'}}"/>
+                <input ng-click="godmodoro.disconnect(model.host)" ng-show="godmodoro.getConnectionState().connected" id="button-disconnect" class="control" type="button" value="Disconnect"/>
             </div>
             <div class="table-cell">
                <!-- <input id="text-server-host" class="control" type="text" value="ws://localhost:5000"/>-->
-                <input ng-disabled="godmodoro.state.connected" id="text-server-host" ng-model="model.host" class="control" type="text" />
+                <input ng-disabled="godmodoro.getConnectionState().connected || godmodoro.getConnectionState().connecting" id="text-server-host" ng-model="model.host" class="control" type="text" />
             </div>
         </div>
-        <div class="table-row" ng-show="godmodoro.state.connected && (godmodoro.sessionOwner || !godmodoro.activeSessionId)">
+        <div class="table-row" ng-show="godmodoro.getConnectionState().connected && (godmodoro.getConnectionState().sessionOwner || !godmodoro.getConnectionState().activeSessionId)">
             <div class="table-cell">
-                <input ng-click="godmodoro.createSession()"
-                       ng-hide="godmodoro.activeSessionId"
-                       ng-disabled="godmodoro.state.creating"
+                <input ng-click="godmodoro.createSession(model.sessionToCreate)"
+                       ng-hide="godmodoro.getConnectionState().activeSessionId"
+                       ng-disabled="godmodoro.getConnectionState().creating"
                        id="button-create-session" class="control" type="button"
-                       value="{{godmodoro.state.creating?'Creating session':'Create session'}}"/>
-                <input type="button" ng-click="godmodoro.closeSession()" ng-show="godmodoro.activeSessionId" value="Close session" />
+                       value="{{godmodoro.getConnectionState().creating?'Creating session':'Create session'}}"/>
+                <input type="button" ng-click="godmodoro.closeSession()" ng-show="godmodoro.getConnectionState().activeSessionId" value="Close session" />
             </div>
             <div class="table-cell">
-                <input ng-model="godmodoro.sessionToCreate" id="text-create-session" class="control" type="text" ng-disabled="godmodoro.activeSessionId" />
+                <input ng-model="godmodoro.sessionToCreate" id="text-create-session" class="control" type="text" ng-disabled="godmodoro.getConnectionState().activeSessionId" />
             </div>
         </div>
-        <div class="table-row" ng-show="godmodoro.state.connected && !godmodoro.sessionOwner" >
+        <div class="table-row" ng-show="godmodoro.getConnectionState().connected && !godmodoro.getConnectionState().sessionOwner" >
             <div class="table-cell">
-                <input ng-hide="godmodoro.activeSessionId" ng-click="godmodoro.joinSession(model.sessionToJoin)"
+                <input ng-hide="godmodoro.getConnectionState().activeSessionId" ng-click="godmodoro.joinSession(model.sessionToJoin)"
                        id="button-join-session" class="control" type="button"
-                       value="{{godmodoro.state.joining?'Joining':'Join session'}}"
-                       ng-disabled="godmodoro.state.joining"
+                       value="{{godmodoro.getConnectionState().joining?'Joining':'Join session'}}"
+                       ng-disabled="godmodoro.getConnectionState().joining"
                 />
-                <input ng-show="godmodoro.activeSessionId" ng-click="godmodoro.leaveSession()" id="button-leave-session" class="control" type="button" value="Leave session"/>
+                <input ng-show="godmodoro.getConnectionState().activeSessionId" ng-click="godmodoro.leaveSession()" id="button-leave-session" class="control" type="button" value="Leave session"/>
             </div>
             <div class="table-cell">
-                <input ng-disabled="godmodoro.activeSessionId" ng-model="model.sessionToJoin" id="text-join-session" class="control" type="text"/>
+                <input ng-disabled="godmodoro.getConnectionState().activeSessionId" ng-model="model.sessionToJoin" id="text-join-session" class="control" type="text"/>
             </div>
         </div>
     </div>

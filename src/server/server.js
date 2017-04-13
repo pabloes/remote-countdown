@@ -146,6 +146,8 @@ var socketServer = function () {
         command: 'CLOSE_SESSION',
         sessionId: data.sessionId
       };
+
+      socket.sessionIdJoined = undefined;
       socket.send(JSON.stringify(messageData));
     }
   }

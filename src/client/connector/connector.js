@@ -1,78 +1,76 @@
-import serverMessage from '../serverMessage/serverMessage';
+import { createStore, applyMiddleware } from 'redux';
+import connectorReducers from './connector-reducers';
+import connectorActions from './connector-actions';
+import thunkMiddleware from 'redux-thunk';
+import { createLogger } from 'redux-logger';
+const loggerMiddleware = createLogger();
+import _pull from 'lodash/pull';
 
-export default function($q){
-    function connect(host, options) {
-        var defer = $q.defer();
+export default function ($q) {
+  let store = createStore(connectorReducers, applyMiddleware(
+    thunkMiddleware, // lets us dispatch() functions
+    loggerMiddleware,
+  ));
+  const commandReceivedCallbacks = {};
 
-        if (!host) {
-            return defer.reject('missing host');
-        }
-        var ws = new WebSocket(host);
-
-        ws.onopen = onOpenSocket;
-        ws.onclose = onClosedSocket;
-        ws.onmessage = onSocketMessage;
-
-        return defer.promise;
-
-        function onClosedSocket(closeEvent) {
-            options.onConnectionClose(closeEvent);
-        }
-
-        function onOpenSocket() {
-            defer.resolve({
-                socket:ws
-            });
-        }
-
-        /*
-         //TODO doubtful if we have to send something to still alive
-         //TODO http://stackoverflow.com/questions/12054412/are-websockets-adapted-to-very-long-lived-connections
-         //TODO https://www.google.es/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=websocket%20keepalive
-         setInterval(function () {
-         ws.send("alive");
-         }, 1000);*/
-
-        function onSocketMessage(response) {
-            var data = JSON.parse(response.data);
-            console.log("message received", data);
-            if (data.command === 'NEW') {
-                options.onSessionCreate(data.sessionId);
-            } else if (data.command === 'CD') {
-                options.onContDown(data);
-            } else if( data.command === 'JOIN_SUCCESS'){
-                options.onSessionJoin(data.sessionId);
-            } else if( data.command === 'PAUSE'){
-                options.onPause(data.pauseTime);
-            } else if( data.command === 'RESUME'){
-                options.onResume(data.resumeTime);
-            } else if( data.command === 'CLOSE_SESSION'){
-                options.onCloseSession();
-            }
-        }
+  function addCommandReceivedCallback(command, callback) {
+    if (!commandReceivedCallbacks[command]) {
+      commandReceivedCallbacks[command] = [callback];
+    } else {
+      commandReceivedCallbacks[command].push(callback);
     }
 
-    function createSession(socket, sessionId){
-        socket.send(JSON.stringify({command:'CREATE', sessionId:sessionId}));
-    }
+    return () => _pull(commandReceivedCallbacks[command], callback);
+  }
 
-    function joinSession(socket, sessionId){
-        socket.send(JSON.stringify({command:'JOIN', sessionId:sessionId}));
-    }
+  function connect(host) {
+    return store.dispatch(connectorActions.connect(host, $q, commandReceivedCallbacks));
+  }
 
-    function closeSession(socket){
-      socket.send(JSON.stringify({command:'CLOSE_SESSION'}));
-    }
+  function closeConnection() {
+    return store.dispatch(
+      connectorActions.closeConnection(store.getState().host, store.getState().socket)
+    );
+  }
 
-    function leaveSession(socket, sessionId){
-        socket.send(JSON.stringify({command:'LEAVE_SESSION', sessionId}));
-    }
+  function createSession(sessionId) {
+    //TODO return a promise?
+    return store.dispatch(connectorActions.createSession(sessionId, store.getState().socket));
+  }
 
-    return {
-        connect:connect,
-        createSession:createSession,
-        joinSession:joinSession,
-        closeSession: closeSession,
-      leaveSession:leaveSession
-    };
+  function joinSession(sessionId) {
+    //TODO return a promise?
+    return store.dispatch(connectorActions.joinSession(sessionId, store.getState().socket));
+  }
+
+  function closeSession() {
+    //TODO do we always need to do store.egtState().socket?
+    // shouldn't it be in other place or anything?
+    return store.dispatch(connectorActions.closeSession(store.getState().socket));
+  }
+
+  function leaveSession() {
+    return store.dispatch(connectorActions.leaveSession(store.getState().socket));
+  }
+
+  function sendCommand(command, data) {
+    return store.dispatch(
+      connectorActions.sendCommand(
+        Object.assign({}, data, { command: command }), store.getState().socket
+      )
+    );
+  }
+
+  return {
+    connect: connect,
+    closeConnection: closeConnection,
+    createSession: createSession,
+    joinSession: joinSession,
+    closeSession: closeSession,
+    leaveSession: leaveSession,
+    sendCommand: sendCommand,
+    getState: store.getState,
+    onCommandReceived: addCommandReceivedCallback,
+    subscribe: (callback) => store.subscribe(() => callback(store.getState())),
+  };
 }

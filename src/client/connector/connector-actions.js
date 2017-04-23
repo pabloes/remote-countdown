@@ -41,7 +41,7 @@ export const createSessionSend = (sessionId, socket) => {
 };
 
 export const joinSessionSend = (sessionId, socket) => {
-  socket.send(JSON.stringify({ command: 'JOIN_SESSION', sessionId: sessionId }));
+  socket.send(JSON.stringify({ command: 'JOIN', sessionId: sessionId }));
 
   return {
     type: 'SESSION_JOIN_SEND',

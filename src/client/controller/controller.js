@@ -24,46 +24,22 @@ export default function (connector, $rootScope, $scope) {
     //TODO review
     $scope.$applyAsync();
   });
+
   connector.onCommandReceived('CD',
     (countdownData) => {
       _this.countdownData=countdownData;
     }
   );
-  connector.onCommandReceived('PAUSE',
-    (pauseActionData) => clock.pause(new Date(pauseActionData.pauseTime))
-  );
-  connector.onCommandReceived('PAUSE', () => {
-    _this.paused = true;
-    $scope.$apply();
-  });
-  connector.onCommandReceived('RESUME',
-    (resumeActionData) => clock.resume(
-      new Date(resumeActionData.resumeTime)
-    )
-  );
-  connector.onCommandReceived('RESUME', () => {
-    _this.paused = false;
-    $scope.$apply();
-  });
-  connector.onCommandReceived('CLOSE_SESSION', () => {
-    clock.stop();
 
-    resetClock();
+  connector.onCommandReceived('CLOSE_SESSION', () => {
     resetJoinSessionInputValue();
 
     $scope.$apply();
   });
-  connector.onCommandReceived('', ()=>{
 
-  });
-
-  _this.paused = false;
   this.connect = (host) => {
     connector.connect(host).then((connection) => {
       connection.onDisconnect(() => {
-        clock.stop();
-
-        resetClock();
         resetJoinSessionInputValue();
         $scope.$apply();
       });
@@ -81,16 +57,8 @@ export default function (connector, $rootScope, $scope) {
   this.resume = () => connector.sendCommand('RESUME');
   this.disconnect = connector.closeConnection;
   this.getConnectionState = connector.getState;
-  this.getTimeColor = () => 'hsl(' + (_this.percentage < 0 ? 0 : _this.percentage) + ',100%,36%)';
 
   function resetJoinSessionInputValue() {
     $scope.model.sessionToJoin = undefined;
-  }
-
-  function resetClock() {
-    _this.timeString = '88:88';
-    _this.differenceInSeconds = 0;
-    _this.globalCountDown = 0;
-    _this.percentage = undefined;
   }
 }

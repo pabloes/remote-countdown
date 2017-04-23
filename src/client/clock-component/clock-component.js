@@ -11,7 +11,7 @@ export default {
   '<input id="text-custom-time" ng-disabled="clock.paused || !clock.editable" ng-model="model.typedTime" class="control" type="text" ng-init="model.typedTime = 10"/>' +
     '<input ng-disabled="clock.paused || !clock.editable" id="button-start-custom" class="control control&#45;&#45;time-button control-time-button&#45;&#45;play" type="button" ng-click="clock.onCountdown({seconds:model.typedTime*60})"' +
   ' value=">" />' +
-  '<input ng-disabled="!clock.editable" id="button-pause" type="button" ng-click="clock.paused?clock.resume():clock.pause()" value="{{clock.paused?\'resume\':\'pause\'}}" />' +
+  '<input ng-disabled="!clock.editable" id="button-pause" type="button" ng-click="clock.isPaused()?clock.onResume():clock.onPause()" value="{{clock.isPaused()?\'resume\':\'pause\'}}" />' +
   '</div>',
   bindings: {
     countdownData: '<',

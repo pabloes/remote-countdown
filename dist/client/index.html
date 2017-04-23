@@ -9,16 +9,16 @@
 <body id="body" ng-app="godmodoro" >
 <div class="body-wrapper" ng-controller="godmodoro as godmodoro">
     <div id="main">
-        <div id="content" ng-bind="godmodoro.timeString" ng-class="{blink: godmodoro.differenceInSeconds < 0}" ng-style="{color:godmodoro.getTimeColor()}"></div>
-        <div id="main-controls" ng-if="godmodoro.getConnectionState().sessionOwner">
-            <input ng-disabled="!godmodoro.getConnectionState().connected || godmodoro.paused || !godmodoro.getConnectionState().sessionOwner" id="button-start-1min" class="control control--time-button" type="button" ng-click="godmodoro.startTimer(60)" value="1 Min"/>
-            <input ng-disabled="!godmodoro.getConnectionState().connected || godmodoro.paused || !godmodoro.getConnectionState().sessionOwner" id="button-start-5min" class="control control--time-button" type="button" ng-click="godmodoro.startTimer(5*60)" value="5 Min"/>
-            <input id="text-custom-time" ng-model="model.typedTime" class="control" type="text" ng-init="model.typedTime = 10"/>
-            <input ng-disabled="!godmodoro.getConnectionState().connected || godmodoro.paused || !godmodoro.getConnectionState().sessionOwner" id="button-start-custom" class="control control&#45;&#45;time-button control-time-button&#45;&#45;play" type="button" ng-click="godmodoro.startTimer(model.typedTime*60)"
-                   value=">" />
-            <input ng-disabled="!godmodoro.getConnectionState().connected || !godmodoro.getConnectionState().sessionOwner" id="button-pause" type="button" ng-click="godmodoro.paused?godmodoro.resume():godmodoro.pause()" value="{{godmodoro.paused?'resume':'pause'}}" />
-
-        </div>
+        <clock
+                ng-if="godmodoro.getConnectionState().activeSessionId"
+                editable="godmodoro.getConnectionState().sessionOwner"
+                on-countdown="godmodoro.startTimer(seconds)"
+                on-pause="godmodoro.pause()"
+                on-resume="godmodoro.resume()"
+                initial-server-date="godmodoro.initialServerDate"
+                countdown-data="godmodoro.countdownData"
+                pauses="godmodoro.pauses"
+        ></clock>
     </div>
     <div class="control-wrapper table">
         <div id="server" class="table-row">
@@ -27,7 +27,7 @@
                 <input ng-click="godmodoro.disconnect(model.host)" ng-show="godmodoro.getConnectionState().connected" id="button-disconnect" class="control" type="button" value="Disconnect"/>
             </div>
             <div class="table-cell">
-               <!-- <input id="text-server-host" class="control" type="text" value="ws://localhost:5000"/>-->
+                <!-- <input id="text-server-host" class="control" type="text" value="ws://localhost:5000"/>-->
                 <input ng-disabled="godmodoro.getConnectionState().connected || godmodoro.getConnectionState().connecting" id="text-server-host" ng-model="model.host" class="control" type="text" />
             </div>
         </div>

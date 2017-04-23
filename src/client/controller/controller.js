@@ -13,19 +13,6 @@ export default function (connector, $rootScope, $scope) {
 
   //$scope.model.host = 'ws://guarded-eyrie-7081.herokuapp.com';
   $scope.model.host = 'ws://localhost:5000';
-  _this.timeString = '88:88';
-  _this.differenceInSeconds = 0;
-  _this.globalCountDown = 0;
-  _this.percentage = undefined;
-  _this.activeSessionId = undefined;
-
-  clock.onTick(function (timeString, differenceInSeconds, globalCountDown) {
-    _this.timeString = timeString;
-    _this.differenceInSeconds = differenceInSeconds;
-    _this.globalCountDown = globalCountDown;
-    _this.percentage = Math.floor(differenceInSeconds * 100 / globalCountDown);
-    $scope.$apply();
-  });
 
   connector.subscribe((connectionState) => {
 
@@ -38,10 +25,9 @@ export default function (connector, $rootScope, $scope) {
     $scope.$applyAsync();
   });
   connector.onCommandReceived('CD',
-    (countdownData) => clock.applyCountdown(
-      countdownData.seconds,
-      new Date(countdownData.startTime),
-      countdownData.pauses)
+    (countdownData) => {
+      _this.countdownData=countdownData;
+    }
   );
   connector.onCommandReceived('PAUSE',
     (pauseActionData) => clock.pause(new Date(pauseActionData.pauseTime))
@@ -67,6 +53,9 @@ export default function (connector, $rootScope, $scope) {
 
     $scope.$apply();
   });
+  connector.onCommandReceived('', ()=>{
+
+  });
 
   _this.paused = false;
   this.connect = (host) => {
@@ -84,9 +73,7 @@ export default function (connector, $rootScope, $scope) {
   };
 
   this.joinSession = connector.joinSession;
-  this.createSession = (sessionToCreate) => connector.createSession(
-    sessionToCreate || _this.sessionToCreate
-  );
+  this.createSession = connector.createSession;
   this.closeSession = connector.closeSession;
   this.leaveSession = connector.leaveSession;
   this.startTimer = (seconds) => connector.sendCommand('CD', { seconds: seconds });

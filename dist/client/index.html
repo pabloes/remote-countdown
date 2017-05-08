@@ -33,7 +33,7 @@
         </div>
         <div class="table-row" ng-show="godmodoro.getConnectionState().connected && (godmodoro.getConnectionState().sessionOwner || !godmodoro.getConnectionState().activeSessionId)">
             <div class="table-cell">
-                <input ng-click="godmodoro.createSession(model.sessionToCreate)"
+                <input ng-click="godmodoro.createSession(godmodoro.sessionToCreate)"
                        ng-hide="godmodoro.getConnectionState().activeSessionId"
                        ng-disabled="godmodoro.getConnectionState().creating"
                        id="button-create-session" class="control" type="button"

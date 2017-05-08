@@ -27,13 +27,13 @@ export default function (connector, $rootScope, $scope) {
 
   connector.onCommandReceived('CD',
     (countdownData) => {
-      _this.countdownData=countdownData;
+      _this.countdownData = countdownData;
     }
   );
 
   connector.onCommandReceived('CLOSE_SESSION', () => {
     resetJoinSessionInputValue();
-
+    _this.countdownData = {};
     $scope.$apply();
   });
 
@@ -41,6 +41,7 @@ export default function (connector, $rootScope, $scope) {
     connector.connect(host).then((connection) => {
       connection.onDisconnect(() => {
         resetJoinSessionInputValue();
+        _this.countdownData = {};
         $scope.$apply();
       });
     }, (err) => {

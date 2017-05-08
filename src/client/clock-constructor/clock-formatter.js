@@ -1,6 +1,10 @@
 export default function (seconds) {
     var negative = false, minutes;
 
+    if(!seconds && seconds !== 0){
+        return '88:88';
+    }
+
     if (seconds < 0){
         negative = true;
         seconds *= -1;

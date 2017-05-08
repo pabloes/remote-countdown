@@ -18,12 +18,12 @@ export default function ($scope) {
   this.differenceInSeconds = 0;
   this.globalCountDown = 0;
   this.percentage = undefined;
-  this.timeString = '88:88';
   this.getState = store.getState;
   this.pauses = [];
   this.getTimeColor = () => 'hsl(' + (_this.percentage < 0 ? 0 : _this.percentage) + ',100%,36%)';
 
   this.isPaused = () => clockTimer.isPaused;
+
   clockTimer.onTick((timeString, differenceInSeconds, globalCountDown) => {
     this.timeString = timeString;
     this.differenceInSeconds = differenceInSeconds;
@@ -31,6 +31,11 @@ export default function ($scope) {
     this.percentage = Math.floor(differenceInSeconds * 100 / globalCountDown);
 
     $scope.$applyAsync();
+  });
+
+  $scope.$on('$destroy', () => {
+    clockTimer.destroy();
+    store.dispatch(clockActions.applyCountdown({}));
   });
 
   $scope.$watch('clock.countdownData',

@@ -75,6 +75,7 @@ var socketServer = function () {
     console.log("received", dataString, socket.sessionId, socket.sessionIdJoined);
     var data = JSON.parse(dataString);
     if (data.command === "CREATE") {
+      socket.pauses = [];
       socket.send(JSON.stringify({ command: 'NEW', sessionId: createSession(socket, data.sessionId) }))
     } else if (data.command === 'CD') {
       var startTime = new Date();
@@ -82,7 +83,7 @@ var socketServer = function () {
       socket.initialTime = startTime;
       socket.timeZoneOffset = timeZoneOffset;
       socket.countdown = data.seconds;
-      socket.pauses = [];
+      socket.pauses = socket.pauses || [];
       socket.seconds = data.seconds;
       var socketOfTheSession = getSocketWithSessionId(data.sessionId, sockets);
       var messageData = {
@@ -116,6 +117,7 @@ var socketServer = function () {
         }
       }
     } else if (data.command === 'PAUSE') {
+      socket.pauses = socket.pauses || [];
       socket.pauses.push({
         pauseTime:new Date(),
         resumeTime:undefined

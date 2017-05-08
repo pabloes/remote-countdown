@@ -8,7 +8,7 @@ export default function (options) {
 
     var globalCountdown,
         globalLocalTime,
-        pauses = [];
+        pauses = [], isTimerRunning, stopped;
 
     var onTickCallbacks = [];
 
@@ -20,6 +20,14 @@ export default function (options) {
     this.resume = resume;
     this.pauses = pauses;
     this.isPaused = undefined;
+
+    this.stop = () => {
+      stopped = true;
+    };
+
+    this.destroy = () => {
+
+    };
 
     function resume(resumeDate){
         //pauses[pauses.length -1].resumeTime = resumeDate.getTime();
@@ -66,7 +74,7 @@ export default function (options) {
             differenceInSeconds += Math.floor(getTotalPauseTime(pauses)/1000);
             triggerOnTick(clockFormatter(differenceInSeconds), differenceInSeconds, globalCountdown);
         }
-        if (!self.isPaused) {
+        if (!isTimerRunning && !self.isPaused) {
             //TODO can do multiple timers? review
             setTimeout(function () {
                 applyTick();
@@ -92,7 +100,7 @@ export default function (options) {
     }
 
     function applyTick() {
-        if(!self.isPaused){
+        if(!self.isPaused && !stopped){
             var now = new Date();
 
             var differenceInSeconds = Math.floor(globalCountdown - (now.getTime() - globalLocalTime) / 1000);
@@ -103,6 +111,10 @@ export default function (options) {
             setTimeout(function () {
                 applyTick();
             }, TICK_TIME);
+        }
+        if(stopped){
+          isTimerRunning = false;
+          stopped = false;
         }
     }
 }

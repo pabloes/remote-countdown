@@ -1,4 +1,4 @@
-import Clock from '../clock-constructor/clock';
+import Clock from '../clock-component/clock-timer/clock';
 
 //TODO clock as component
 //TODO in connector, separate sessionHandler as component

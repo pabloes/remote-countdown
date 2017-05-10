@@ -4,7 +4,7 @@ import clockActions from './clock-actions';
 import thunkMiddleware from 'redux-thunk';
 import {createLogger} from 'redux-logger';
 const loggerMiddleware = createLogger();
-import Clock from '../clock-constructor/clock';
+import Clock from './clock-timer/clock';
 
 export default function ($scope) {
   const clockTimer = new Clock({ tickTime: 300 });

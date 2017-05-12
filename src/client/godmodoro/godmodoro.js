@@ -1,4 +1,4 @@
-import Clock from '../clock-constructor/clock';
+import Clock from '../clock-component/clock-timer/clock';
 import serverMessage from '../serverMessage/serverMessage';
 
 export default function createGodmodoroClient() {

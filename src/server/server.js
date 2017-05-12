@@ -4,7 +4,7 @@ var socketServer = function () {
   var express = require("express");
   var app = express();
   var port = process.env.PORT || 5000;
-
+//TODO wrap into socket.countdownData object the different related variables
   app.use(express.static(__dirname + "/"));
 
   var server = http.createServer(app);
@@ -75,6 +75,7 @@ var socketServer = function () {
     console.log("received", dataString, socket.sessionId, socket.sessionIdJoined);
     var data = JSON.parse(dataString);
     if (data.command === "CREATE") {
+      socket.pauses = [];
       socket.send(JSON.stringify({ command: 'NEW', sessionId: createSession(socket, data.sessionId) }))
     } else if (data.command === 'CD') {
       var startTime = new Date();
@@ -83,6 +84,7 @@ var socketServer = function () {
       socket.timeZoneOffset = timeZoneOffset;
       socket.countdown = data.seconds;
       socket.pauses = [];
+      socket.seconds = data.seconds;
       var socketOfTheSession = getSocketWithSessionId(data.sessionId, sockets);
       var messageData = {
         command: 'CD',
@@ -115,21 +117,27 @@ var socketServer = function () {
         }
       }
     } else if (data.command === 'PAUSE') {
-      var pauseTime = new Date();
       socket.pauses = socket.pauses || [];
       socket.pauses.push({
-        pauseTime: pauseTime
+        pauseTime:new Date(),
+        resumeTime:undefined
       });
+
       sendToMembersOfMySession(socket, {
-        command: 'PAUSE',
-        pauseTime: pauseTime
+        command: 'CD',
+        pauses: socket.pauses,
+        startTime: socket.initialTime,
+        seconds: socket.seconds,
       });
+
     } else if (data.command === 'RESUME') {
       var resumeTime = new Date();
       socket.pauses[socket.pauses.length - 1].resumeTime = resumeTime;
       sendToMembersOfMySession(socket, {
-        command: 'RESUME',
-        resumeTime: resumeTime
+        command: 'CD',
+        pauses: socket.pauses,
+        startTime: socket.initialTime,
+        seconds: socket.seconds,
       })
     } else if (data.command === 'CLOSE_SESSION') {
       var messageData = {

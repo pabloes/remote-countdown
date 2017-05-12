@@ -7,11 +7,8 @@ export default function (options) {
     const TICK_TIME = (options || {}).tickTime || 300;
 
     var globalCountdown,
-        isTimerRunning = false,
         globalLocalTime,
-        paused = false,
-        stopped = false,
-        pauses = [];
+        pauses = [], isTimerRunning, stopped;
 
     var onTickCallbacks = [];
 
@@ -22,13 +19,19 @@ export default function (options) {
     this.pause = pause;
     this.resume = resume;
     this.pauses = pauses;
+    this.isPaused = undefined;
 
-    this.stop = function(){
-        stopped = true;
+    this.stop = () => {
+      stopped = true;
     };
+
+    this.destroy = () => {
+
+    };
+
     function resume(resumeDate){
-        pauses[pauses.length -1].resumeTime = resumeDate.getTime();
-        paused = false;
+        //pauses[pauses.length -1].resumeTime = resumeDate.getTime();
+        self.isPaused = false;
         applyTick();
     }
 
@@ -36,7 +39,7 @@ export default function (options) {
         var secondsBetweenInitialTimeAndPause = Math.floor( (pauseDate.getTime() - globalLocalTime )/1000 );
         var differenceInSeconds = globalCountdown-secondsBetweenInitialTimeAndPause;
         differenceInSeconds += Math.floor(getTotalPauseTime(pauses)/1000);
-        paused = true;
+        self.isPaused = true;
         triggerOnTick(clockFormatter(differenceInSeconds), differenceInSeconds, globalCountdown);
         pauses.push({
             pauseTime:pauseDate.getTime()
@@ -57,25 +60,28 @@ export default function (options) {
             }
         });
     }
+
     function applyCountdown(countdown, initialDate, serverPauses) {
-
         pauses = convertPausesFromDateToTime(serverPauses) || [];
-        paused = false;
-
+        self.isPaused = false;
         globalCountdown = countdown;
         globalLocalTime = initialDate.getTime() || (new Date()).getTime();
         if(pauses.length && !pauses[pauses.length-1].resumeTime){
-            paused = true;
+          self.isPaused = true;
             var pauseTime = pauses[pauses.length-1].pauseTime;
             var secondsBetweenInitialTimeAndPause = Math.floor( (pauseTime - globalLocalTime )/1000 );
             var differenceInSeconds = globalCountdown-secondsBetweenInitialTimeAndPause;
             differenceInSeconds += Math.floor(getTotalPauseTime(pauses)/1000);
             triggerOnTick(clockFormatter(differenceInSeconds), differenceInSeconds, globalCountdown);
         }
-        if (!isTimerRunning && !paused) {
+        if (!isTimerRunning && !self.isPaused) {
+            //TODO can do multiple timers? review
             setTimeout(function () {
                 applyTick();
             }, TICK_TIME);
+        }
+        if(self.isPaused && pauses[pauses.length-1].resumeTime){
+          resume();
         }
     }
 
@@ -94,12 +100,11 @@ export default function (options) {
     }
 
     function applyTick() {
-        if(!paused && !stopped){
+        if(!self.isPaused && !stopped){
             var now = new Date();
 
             var differenceInSeconds = Math.floor(globalCountdown - (now.getTime() - globalLocalTime) / 1000);
             differenceInSeconds += Math.floor(getTotalPauseTime(pauses)/1000);
-            isTimerRunning = true;
 
             triggerOnTick(clockFormatter(differenceInSeconds), differenceInSeconds, globalCountdown);
 
@@ -107,10 +112,9 @@ export default function (options) {
                 applyTick();
             }, TICK_TIME);
         }
-
         if(stopped){
-            isTimerRunning = false;
-            stopped = false;
+          isTimerRunning = false;
+          stopped = false;
         }
     }
 }

@@ -6,7 +6,7 @@
   "keywords": ["team", "remote", "timer", "sync", "meeting", "countdown", "collaboration"],
   "window": {
     "title": "remote-countdown",
-    "icon": "./hand-of-god.png.icns",
+    "icon": "time.png",
     "toolbar": false,
     "frame": false,
     "width": 400,

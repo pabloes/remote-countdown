@@ -3,9 +3,12 @@ module.exports = function (grunt) {
     grunt.initConfig({
         nwjs: {
             options: {
-                "version": "0.12.0",
+                version: "0.21.0",
                 platforms: ['win64', 'win32', 'osx64', 'linux32', 'linux64'],
-                buildDir: './webkitbuilds' // Where the build version of my NW.js app is saved
+                buildDir: './webkitbuilds',
+                macIcns: './dist/client/time.icns',
+                //winIco requires wine to be installed in no windows environment
+                //winIco: './dist/client/time.ico',
             },
             src: ['dist/client/**/*']
         }

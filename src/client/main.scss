@@ -1,84 +1,16 @@
-@import "./bootstrap.min.css";
+@import './clock-component/clock';
 
 html, body {
   background-color: transparent;
-  font-size:10px;
-  height: 100%;
-  margin: 0;
 }
+
 body {
   -webkit-app-region: drag;
   border:2px solid firebrick
 }
+
 input {
   -webkit-app-region: no-drag;
-}
-* {
-  box-sizing: border-box;
-}
-
-@font-face {
-  font-family: 'alarm clock';
-  src: url('font/alarm clock.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-}
-
-.body-wrapper {
-  display: table;
-}
-
-#content {
-  font-family: 'alarm clock', Arial, serif;
-  font-size: 4.2em;
-  display: table-cell;
-}
-
-#main {
-  display: table;
-  width: 100%;
-
-  &-controls {
-    display: table-cell;
-    margin-left: 0.8em;
-    margin-top: 0.5em;
-  }
-}
-[disabled]{
-  opacity: 0.5;
-}
-.control {
-  display: table-cell;
-  font-size: 1em;
-
-  &--time-button {
-    float: left;
-  }
-  &-wrapper {
-    clear: left;
-  }
-}
-
-#text-custom-time {
-  clear: both;
-  float: left;
-  width: 4em;
-}
-
-.table {
-  display: table;
-
-  &-row {
-    display: table-row;
-  }
-
-  &-cell {
-    display: table-cell;
-
-    > * {
-      width: 100%;
-    }
-  }
 }
 
 .blink {

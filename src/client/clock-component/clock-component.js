@@ -4,7 +4,7 @@ export default {
   restrict: 'E',
   controller: clockController,
   controllerAs: 'clock',
-  template: '<div id="content" ng-bind="clock.timeString" ng-class="{blink: clock.differenceInSeconds < 0}" ng-style="{color:clock.getTimeColor()}">88:88</div>' +
+  template: '<div class="clock" ng-bind="clock.timeString" ng-class="{blink: clock.differenceInSeconds < 0}" ng-style="{color:clock.getTimeColor()}">88:88</div>' +
     '<div id="main-controls" ng-if="clock.editable">' +
       '<input ng-disabled="clock.paused || !clock.editable" id="button-start-1min" class="control control--time-button" type="button" ng-click="clock.onCountdown({seconds:60})" value="1 Min"/>' +
       '<input ng-disabled="clock.paused || !clock.editable" id="button-start-5min" class="control control--time-button" type="button" ng-click="clock.onCountdown({seconds:5*60})" value="5 Min"/>' +

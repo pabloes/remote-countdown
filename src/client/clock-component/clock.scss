@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'alarm clock';
+  /* TODO fix route, here we shouldn't know about parent folders */
+  src: url('./clock-component/font/alarm clock.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.clock {
+  font-family: 'alarm clock', Arial, serif;
+}
+

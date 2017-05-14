@@ -1,3 +1,4 @@
+@import '~angular-material/angular-material.scss';
 @import './clock-component/clock';
 
 html, body {
@@ -6,7 +7,8 @@ html, body {
 
 body {
   -webkit-app-region: drag;
-  border:2px solid firebrick
+  border:2px solid firebrick;
+  padding: 0.5em;
 }
 
 input {

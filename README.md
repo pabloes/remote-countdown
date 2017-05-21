@@ -6,9 +6,7 @@ Working in my company, the team does small presentations in an online meeting of
 The problem is that these presentations usually spend more time than they should.
 
 ### How it looks/works
-![app screenshot](https://raw.githubusercontent.com/pabloes/remote-countdown/master/readme-files/fisrt-no-style-screenshot.png)
-(sorry for no styling it yet :( ))
-
+![app screenshot](https://raw.githubusercontent.com/pabloes/remote-countdown/master/readme-files/screenshot.png)
 
 First thing is to connect to a host, See next "How to run it section" to connect to localhost or just try `ws://guarded-eyrie-7081.herokuapp.com`
 

@@ -5,7 +5,7 @@ import Clock from '../clock-component/clock-timer/clock';
 // with own state and inputs with proper interface,
 // other component would be connectionHandler
 
-export default function (connector, $rootScope, $scope) {
+export default function (connector, $rootScope, $scope, $mdSidenav) {
   const _this = this;
   const clock = new Clock({ tickTime: 300 });
 
@@ -58,7 +58,17 @@ export default function (connector, $rootScope, $scope) {
   this.resume = () => connector.sendCommand('RESUME');
   this.disconnect = connector.closeConnection;
   this.getConnectionState = connector.getState;
-
+  this.sideClose = () => {
+    $mdSidenav('left').close();
+  };
+  this.sideOpen = () => {
+    $mdSidenav('left').open();
+  }
+  $scope.$watch('godmodoro.getConnectionState().activeSessionId', (activeSessionId)=>{
+      if(activeSessionId){
+        $mdSidenav('left').close();
+      }
+  });
   function resetJoinSessionInputValue() {
     $scope.model.sessionToJoin = undefined;
   }

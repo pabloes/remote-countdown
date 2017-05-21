@@ -1,14 +1,22 @@
 @import '~angular-material/angular-material.scss';
 @import './clock-component/clock';
 
+@font-face {
+  font-family: 'WorkSans-ExtraLight';
+  /* TODO fix route, here we shouldn't know about parent folders */
+  src: url('./font/WorkSans-ExtraLight.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html, body {
   background-color: transparent;
+  font-family: 'WorkSans-ExtraLight';
 }
 
 body {
   -webkit-app-region: drag;
   border:2px solid firebrick;
-  padding: 0.5em;
 }
 
 input {
@@ -21,4 +29,17 @@ input {
 
 @keyframes blinker {
   50% { opacity: 0; }
+}
+/* angular material overwrites */
+.settings {
+  width: 100%;
+  max-width: none;
+}
+md-toolbar:not(.md-menu-toolbar) {
+  background-color: white;
+  color: grey;
+}
+
+md-toolbar md-icon svg {
+  fill: grey;
 }

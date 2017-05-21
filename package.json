@@ -44,18 +44,19 @@
     "grunt": "~1.0.1",
     "grunt-nw-builder": "~3.1.0",
     "grunt-webpack": "~1.0.11",
+    "html-loader": "^0.4.5",
     "jasmine-core": "~2.4.1",
     "karma": "~0.13.22",
     "karma-chrome-launcher": "~0.2.3",
     "karma-jasmine": "~0.3.8",
     "karma-webpack": "~1.7.0",
+    "node-sass": "3.8.0",
     "nw-builder": "~3.2.0",
     "sass-loader": "~3.2.0",
     "style-loader": "~0.13.1",
     "url-loader": "~0.5.7",
     "webpack": "~1.13.0",
-    "webpack-dev-server": "~1.14.1",
-    "node-sass": "3.8.0"
+    "webpack-dev-server": "~1.14.1"
   },
   "dependencies": {
     "angular": "~1.6.4",

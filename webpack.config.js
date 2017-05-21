@@ -37,7 +37,11 @@ module.exports = {
                 test: /\.svg$/,
                 loader: 'file?name=img/icons/[name].[ext]',
                 exclude: /node_modules/
-            }
+            },
+              {
+                test: /\.tpl\.html$/, // Only .html files
+                loader: 'html' // Run html loader
+              }
         ]
     },
     plugins:[

@@ -80,6 +80,10 @@
         >
             <md-icon md-svg-icon="img/icons/settings.svg"></md-icon>
         </md-button>
+        <div layout="column">
+            <span>SessionId (click to copy)</span>
+            <span ng-bind="godmodoro.getConnectionState().activeSessionId"></span>
+        </div>
     </div>
 </md-toolbar>
         <div layout>

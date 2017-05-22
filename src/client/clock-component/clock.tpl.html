@@ -1,10 +1,10 @@
-<div layout="column">
+<div layout="column" class="clock-component">
     <div class="clock" ng-bind="clock.timeString"
          ng-class="{blink: clock.differenceInSeconds < 0}"
          ng-style="{color:clock.getTimeColor()}">
         88:88
     </div>
-    <div class="clock-tools" layout="row" layout-align="space-around end">
+    <div class="clock-tools" layout="row" layout-align="space-around end" ng-if="clock.editable">
         <div flex class="md-button rc-time-button md-whiteframe-1dp" ng-disabled="!clock.editable"
              ng-click="clock.isPaused()?clock.onResume():clock.onPause()">
             {{clock.isPaused()?'>':'||'}}

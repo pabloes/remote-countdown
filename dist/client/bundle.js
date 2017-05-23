@@ -76080,6 +76080,14 @@
 	    ws.onopen = function () {
 	      defer.resolve({ socket: ws, onDisconnect: setDisconnectCallback });
 	      dispatch(connectionSuccess(host, ws));
+
+	      //TODO unregister, test alive to avoid idle connection message
+	      setInterval(function () {
+	        socket.send((0, _stringify2.default)({
+	          command: 'ALIVE',
+	          value: Math.floor(Math.random() * 1000)
+	        }));
+	      }, 1000);
 	    };
 
 	    ws.onclose = function () {

@@ -104,6 +104,15 @@ function connectAsyncMiddleware(host, $q, commandReceivedCallbacks) {
     ws.onopen = () => {
       defer.resolve({ socket: ws, onDisconnect:setDisconnectCallback });
       dispatch(connectionSuccess(host, ws));
+
+      //TODO unregister, test alive to avoid idle connection message
+      setInterval(()=>{
+        console.log("alive interval");
+        ws.send(JSON.stringify({
+          command:'ALIVE',
+          value:Math.floor(Math.random()*1000)
+        }));
+      },1000);
     };
 
     ws.onclose = () => {

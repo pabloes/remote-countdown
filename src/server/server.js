@@ -157,6 +157,11 @@ var socketServer = function () {
 
       socket.sessionIdJoined = undefined;
       socket.send(JSON.stringify(messageData));
+    } else if(data.command === 'ALIVE'){
+      socket.send(JSON.stringify({
+        command:'ALIVE_RECEIVED',
+        value:Math.floor(Math.random()*1000)
+      }));
     }
   }
 

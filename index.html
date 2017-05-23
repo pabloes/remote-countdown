@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="dist/client/bundle.js"></script>
+    <link href="dist/client/stylesheets/main.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body layout="column" ng-app="godmodoro" ng-controller="godmodoro as godmodoro" ng-cloak>
+<md-sidenav class="settings" md-component-id="left"
+            md-whiteframe="1"
+            md-is-open="true">
+    <md-toolbar layout="row" class="md-theme-white md-whiteframe-1dp">
+        <div class="md-toolbar-tools">
+            <md-icon md-svg-icon="img/icons/settings.svg"></md-icon><h1 class="md-toolbar-tools">Settings</h1>
+            <md-button class="md-icon-button md-button md-whiteframe-1dp"
+                       aria-label="Back"
+                       ng-click="godmodoro.sideClose()"
+                       ng-if="godmodoro.getConnectionState().activeSessionId"
+            >
+                <md-icon md-svg-icon="img/icons/arrow-back.svg"></md-icon>
+            </md-button>
+        </div>
+
+    </md-toolbar>
+    <br />
+    <section>
+        <div layout="row" class="md-block" ng-if="!godmodoro.getConnectionState().connected">
+            <md-button class="md-raised md-primary md-fab" ng-click="godmodoro.connect(model.host)"
+                       ng-disabled="!model.host || godmodoro.getConnectionState().connecting"
+            >
+                <md-icon class="material-icons">power</md-icon>
+            </md-button>
+            <md-input-container flex class="md-icon-float md-block md-title">
+                <input ng-disabled="godmodoro.getConnectionState().connected || godmodoro.getConnectionState().connecting"
+                       ng-model="model.host"
+                       ng-if="!godmodoro.getConnectionState().connected"
+                />
+            </md-input-container>
+        </div>
+
+        <div layout="row"
+             ng-show="godmodoro.getConnectionState().connected && (godmodoro.getConnectionState().sessionOwner || !godmodoro.getConnectionState().activeSessionId)">
+            <md-button class="md-raised md-primary md-fab"
+                       ng-click="godmodoro.createSession(godmodoro.sessionToCreate)"
+                       ng-hide="godmodoro.getConnectionState().activeSessionId"
+
+            >
+                <md-icon class="material-icons">trending_flat</md-icon>
+            </md-button>
+            <md-input-container flex class="md-icon-float md-block md-title">
+                <label ng-bind="godmodoro.getConnectionState().activeSessionId?'session Id':'Type session id to create or leave empty to generate'"></label>
+                <input ng-model="godmodoro.sessionToCreate" type="text" ng-disabled="godmodoro.getConnectionState().activeSessionId" />
+            </md-input-container>
+
+        </div>
+
+        <div layout="row"
+             ng-show="godmodoro.getConnectionState().connected && !godmodoro.getConnectionState().sessionOwner">
+            <md-button class="md-raised md-primary md-fab"
+                       ng-click="godmodoro.joinSession(model.sessionToJoin)"
+                       ng-hide="godmodoro.getConnectionState().activeSessionId"
+            >
+                <md-icon class="material-icons">trending_flat</md-icon>
+            </md-button>
+            <md-input-container flex class="md-icon-float md-block md-title" >
+                <label ng-bind="godmodoro.getConnectionState().activeSessionId?'session Id':'type session Id to join'"></label>
+                <input ng-model="model.sessionToJoin"
+                       type="text"
+                       ng-disabled="godmodoro.getConnectionState().activeSessionId"
+                />
+            </md-input-container>
+        </div>
+
+        <div class="md-block" ng-if="godmodoro.getConnectionState().connected">
+            <button ng-click="godmodoro.disconnect(model.host)" class="md-raised md-button md-primary">DISCONNECT</button>
+        </div>
+    </section>
+</md-sidenav>
+<md-toolbar layout="row" class="md-theme-white md-whiteframe-1dp">
+    <div class="md-toolbar-tools">
+        <md-button class="md-icon-button md-button md-whiteframe-1dp"
+                   aria-label="Back"
+                   ng-click="godmodoro.sideOpen()"
+        >
+            <md-icon md-svg-icon="img/icons/settings.svg"></md-icon>
+        </md-button>
+        <div layout="column">
+            <span clipboard text="godmodoro.getConnectionState().activeSessionId">SessionId (click to copy)</span>
+            <span clipboard text="godmodoro.getConnectionState().activeSessionId" ng-bind="godmodoro.getConnectionState().activeSessionId"></span>
+        </div>
+    </div>
+</md-toolbar>
+        <div layout>
+            <clock
+                    ng-if="godmodoro.getConnectionState().activeSessionId"
+                    editable="godmodoro.getConnectionState().sessionOwner"
+                    on-countdown="godmodoro.startTimer(seconds)"
+                    on-pause="godmodoro.pause()"
+                    on-resume="godmodoro.resume()"
+                    initial-server-date="godmodoro.initialServerDate"
+                    countdown-data="godmodoro.countdownData"
+                    pauses="godmodoro.pauses"
+            ></clock>
+        </div>
+
+
+        <!--         <input   class="control" type="button" value="Disconnect"/>
+                        <input ng-click="godmodoro.createSession(godmodoro.sessionToCreate)"
+                               ng-hide="godmodoro.getConnectionState().activeSessionId"
+                               ng-disabled="godmodoro.getConnectionState().creating"
+                               id="button-create-session" class="control" type="button"
+                               value="{{godmodoro.getConnectionState().creating?'Creating session':'Create session'}}"/>
+                        <input type="button" ng-click="godmodoro.closeSession()" ng-show="godmodoro.getConnectionState().activeSessionId" value="Close session" />
+                        <input ng-model="godmodoro.sessionToCreate" id="text-create-session" class="control" type="text" ng-disabled="godmodoro.getConnectionState().activeSessionId" />
+                        <input ng-hide="godmodoro.getConnectionState().activeSessionId" ng-click="godmodoro.joinSession(model.sessionToJoin)"
+                               id="button-join-session" class="control" type="button"
+                               value="{{godmodoro.getConnectionState().joining?'Joining':'Join session'}}"
+                               ng-disabled="godmodoro.getConnectionState().joining"
+                        />
+                        <input ng-show="godmodoro.getConnectionState().activeSessionId" ng-click="godmodoro.leaveSession()" id="button-leave-session" class="control" type="button" value="Leave session"/>
+                        <input ng-disabled="godmodoro.getConnectionState().activeSessionId" ng-model="model.sessionToJoin" id="text-join-session" class="control" type="text"/>-->
+</body>
+</html>

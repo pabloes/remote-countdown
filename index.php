@@ -1,1 +1,1 @@
-<?php header( 'Location: /dist/client/index.html' ) ; /* heroku deploy trick */  ?>
+<?php header( 'Location: /index.html' ) ; ?>

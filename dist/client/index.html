@@ -39,9 +39,7 @@
                 />
             </md-input-container>
         </div>
-        <div class="md-block" ng-if="godmodoro.getConnectionState().connected">
-            <button ng-click="godmodoro.disconnect(model.host)" class="md-raised md-button md-primary">DISCONNECT</button>
-        </div>
+
         <div layout="row"
              ng-show="godmodoro.getConnectionState().connected && (godmodoro.getConnectionState().sessionOwner || !godmodoro.getConnectionState().activeSessionId)">
             <md-button class="md-raised md-primary md-fab"
@@ -57,6 +55,7 @@
             </md-input-container>
 
         </div>
+
         <div layout="row"
              ng-show="godmodoro.getConnectionState().connected && !godmodoro.getConnectionState().sessionOwner">
             <md-button class="md-raised md-primary md-fab"
@@ -72,6 +71,10 @@
                        ng-disabled="godmodoro.getConnectionState().activeSessionId"
                 />
             </md-input-container>
+        </div>
+
+        <div class="md-block" ng-if="godmodoro.getConnectionState().connected">
+            <button ng-click="godmodoro.disconnect(model.host)" class="md-raised md-button md-primary">DISCONNECT</button>
         </div>
     </section>
 </md-sidenav>

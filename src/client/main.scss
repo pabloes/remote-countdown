@@ -16,7 +16,6 @@ html, body {
 
 body {
   -webkit-app-region: drag;
-  border:2px solid firebrick;
 }
 
 input {
@@ -42,4 +41,8 @@ md-toolbar:not(.md-menu-toolbar) {
 
 md-toolbar md-icon svg {
   fill: grey;
+}
+
+md-toolbar clipboard {
+  cursor: pointer;
 }

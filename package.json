@@ -13,7 +13,7 @@
     "collaboration"
   ],
   "scripts": {
-    "start": "npm install && webpack && grunt nwjs && npm run server",
+    "start": "webpack && grunt nwjs && npm run server",
     "start-dev": "forever stopall && forever start ./src/server/server.js && npm run webpack-dev-server",
     "stop-dev": "forever stopall",
     "nwjs": "webpack && grunt nwjs",
@@ -32,7 +32,7 @@
     "url": "https://gitlab.com/pabloes/remote-countdown/issues"
   },
   "homepage": "https://gitlab.com/pabloes/remote-countdown#README",
-  "devDependencies": {
+  "dependencies": {
     "angular-clipboard": "^1.5.0",
     "babel-core": "~6.7.4",
     "babel-loader": "~6.2.4",
@@ -57,9 +57,7 @@
     "sass-loader": "~3.2.0",
     "style-loader": "~0.13.1",
     "url-loader": "~0.5.7",
-    "webpack-dev-server": "~1.14.1"
-  },
-  "dependencies": {
+    "webpack-dev-server": "~1.14.1",
     "angular": "~1.6.4",
     "angular-animate": "^1.6.4",
     "angular-aria": "^1.6.4",

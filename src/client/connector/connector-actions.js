@@ -112,7 +112,7 @@ function connectAsyncMiddleware(host, $q, commandReceivedCallbacks) {
           command:'ALIVE',
           value:Math.floor(Math.random()*1000)
         }));
-      }, 2000);
+      }, Math.floor(Math.random()*500)) + 1000;
     };
 
     ws.onclose = () => {

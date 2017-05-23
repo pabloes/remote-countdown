@@ -4,8 +4,8 @@ var socketServer = function () {
   var express = require("express");
   var app = express();
   var port = process.env.PORT || 5000;
-//TODO wrap into socket.countdownData object the different related variables
-  app.use(express.static(__dirname + "/"));
+  var path = require('path');
+  app.use('/', express.static(path.join(__dirname, '../../dist/client')));
 
   var server = http.createServer(app);
   server.listen(port);
@@ -233,4 +233,8 @@ var socketServer = function () {
     }
     return false;
   }
+}();
+var webServer = function(){
+
+
 }();

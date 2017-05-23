@@ -13728,8 +13728,7 @@ html, body {
   font-family: 'WorkSans-ExtraLight'; }
 
 body {
-  -webkit-app-region: drag;
-  border: 2px solid firebrick; }
+  -webkit-app-region: drag; }
 
 input {
   -webkit-app-region: no-drag; }

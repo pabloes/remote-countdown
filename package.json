@@ -13,7 +13,7 @@
     "collaboration"
   ],
   "scripts": {
-    "start": "npm run server",
+    "start": "webpack && grunt nwjs && npm run server",
     "start-dev": "forever stopall && forever start ./src/server/server.js && npm run webpack-dev-server",
     "stop-dev": "forever stopall",
     "nwjs": "webpack && grunt nwjs",
@@ -44,6 +44,7 @@
     "file-loader": "~0.8.5",
     "forever": "^0.15.3",
     "grunt": "~1.0.1",
+    "grunt-cli": "^1.2.0",
     "grunt-nw-builder": "~3.1.0",
     "grunt-webpack": "~1.0.11",
     "html-loader": "^0.4.5",

@@ -13,7 +13,7 @@
     "collaboration"
   ],
   "scripts": {
-    "start": "webpack && npm run server",
+    "start": "webpack && npm run nwjs && npm run server",
     "start-dev": "forever stopall && forever start ./src/server/server.js && npm run webpack-dev-server",
     "stop-dev": "forever stopall",
     "nwjs": "webpack && grunt nwjs",

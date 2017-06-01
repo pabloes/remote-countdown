@@ -76075,24 +76075,26 @@
 	    };
 	    var ws = new WebSocket(host);
 	    var onDisconnectCallback = _noop3.default;
+	    var aliveInterval = void 0;
 
 	    dispatch(sendConnection(host, ws));
 	    ws.onopen = function () {
 	      defer.resolve({ socket: ws, onDisconnect: setDisconnectCallback });
 	      dispatch(connectionSuccess(host, ws));
 
-	      //TODO unregister, test alive to avoid idle connection message
-	      setInterval(function () {
-	        socket.send((0, _stringify2.default)({
+	      //TODO heroku sockets workaround to be improved
+	      aliveInterval = setInterval(function () {
+	        ws.send((0, _stringify2.default)({
 	          command: 'ALIVE',
 	          value: Math.floor(Math.random() * 1000)
 	        }));
-	      }, 1000);
+	      }, Math.floor(Math.random() * 20000));
 	    };
 
 	    ws.onclose = function () {
 	      dispatch(closeConnection(host, ws));
 	      onDisconnectCallback();
+	      clearInterval(aliveInterval);
 	    };
 
 	    ws.onerror = function (event) {

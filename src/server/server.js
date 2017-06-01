@@ -55,24 +55,25 @@ var socketServer = function () {
     sockets.push(socket);
 
     socket.on('message', function (data) {
-      console.log("message", data);
+      console.log('.');
       onSocketMessageReceived(data, socket);
     });
 
     socket.on('close', function () {
-      console.log("socket closed");
+      console.log("socket closed", socket.address());
       onSocketClose(socket, sockets);
     });
 
     socket.on('error', function (err) {
       console.log("ERROR", err);
     });
+
+    socket.on('timeout', function(){
+      console.log('timeout', socket.address());
+    })
   }
 
   function onSocketMessageReceived(dataString, socket) {
-    console.log(dataString, socket.sessionId);
-
-    console.log("received", dataString, socket.sessionId, socket.sessionIdJoined);
     var data = JSON.parse(dataString);
     if (data.command === "CREATE") {
       socket.pauses = [];
@@ -209,8 +210,9 @@ var socketServer = function () {
         });
       }
       socket.close();
+      console.log('Socket closed!',socket.handshake.address);
       socket.destroy();
-      console.log('Socket closed!');
+
       for (var i = 0; i < sockets.length; i++) {
         if (sockets[i] == socket) {
           sockets.splice(i, 1);

@@ -5,6 +5,7 @@
   "version": "0.1.0",
   "keywords": ["team", "remote", "timer", "sync", "meeting", "countdown", "collaboration"],
   "window": {
+    "id": "remote-countdown",
     "title": "remote-countdown",
     "icon": "time.png",
     "toolbar": false,
@@ -16,8 +17,10 @@
     "show": true,
     "position": "center",
     "transparent": true,
-    "always-on-top": true,
-    "visible-on-all-workspaces": true
+    "always_on_top": true,
+    "visible_on_all_workspaces": true,
+    "nodejs": false,
+    "plugin": false
   },
   "webkit": {
     "plugin": true

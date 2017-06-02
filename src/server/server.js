@@ -60,7 +60,7 @@ var socketServer = function () {
     });
 
     socket.on('close', function () {
-      console.log("socket closed", socket.address());
+      console.log("socket closed", socket);
       onSocketClose(socket, sockets);
     });
 
@@ -69,7 +69,7 @@ var socketServer = function () {
     });
 
     socket.on('timeout', function(){
-      console.log('timeout', socket.address());
+      console.log('timeout', socket);
     })
   }
 
@@ -210,7 +210,7 @@ var socketServer = function () {
         });
       }
       socket.close();
-      console.log('Socket closed!',socket.handshake.address);
+      console.log('Socket closed!');
       socket.destroy();
 
       for (var i = 0; i < sockets.length; i++) {
@@ -241,7 +241,4 @@ var socketServer = function () {
     return false;
   }
 }();
-var webServer = function(){
 
-
-}();

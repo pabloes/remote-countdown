@@ -1,0 +1,25 @@
+Server store
+
+socketCollection:[
+    {
+        socket:Socket
+        socketId:String //NOT NECESSARY?
+        ip:String
+    },
+]
+sessionCollection:[
+    {
+        id:string
+        owner:socket
+        members:[socket],
+        countdownData:{
+            pauses:[{
+                        pauseDate,
+                        resumeDate
+                    }]
+            initialDate:Date
+            timeZoneOffset:number|string //NOT NECESSARY?
+            countdownSeconds:Number
+        }
+    }
+]

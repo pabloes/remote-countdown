@@ -1,0 +1,32 @@
+<div layout="column" class="clock-component">
+    <div class="clock" ng-bind="clock.timeString"
+         ng-class="{blink: clock.differenceInSeconds < 0}"
+         ng-style="{color:clock.getTimeColor()}">
+        88:88
+    </div>
+    <div class="clock-tools" layout="row" layout-align="space-around end" ng-if="clock.editable">
+        <div flex class="md-button rc-time-button md-whiteframe-1dp" ng-disabled="!clock.editable"
+             ng-click="clock.isPaused()?clock.onResume():clock.onPause()">
+            {{clock.isPaused()?'>':'||'}}
+        </div>
+        <div flex class="md-button rc-time-button md-whiteframe-1dp" ng-disabled="clock.paused || !clock.editable"
+             ng-click="clock.onCountdown({seconds:5*60})">5</div>
+        <div flex class="md-button rc-time-button md-whiteframe-1dp" ng-disabled="clock.paused || !clock.editable"
+             ng-click="clock.onCountdown({seconds:10*60})">10</div>
+        <md-input-container flex="40">
+            <label>custom time</label>
+            <input flex="60"
+                   type="text"
+                   class="rc-time-input md-whiteframe-1dp"
+                   placeholder="minutes"
+                   ng-disabled="clock.paused || !clock.editable"
+                   ng-model="model.typedTime" />
+            <div flex="40" class="md-button rc-time-custom-ok md-whiteframe-1dp"
+                 ng-disabled="clock.paused || !clock.editable"
+                 ng-click="clock.onCountdown({seconds:model.typedTime*60})"
+            >✓</div>
+        </md-input-container>
+
+
+    </div>
+</div>

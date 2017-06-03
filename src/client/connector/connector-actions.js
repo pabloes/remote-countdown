@@ -99,16 +99,26 @@ function connectAsyncMiddleware(host, $q, commandReceivedCallbacks) {
     };
     let ws = new WebSocket(host);
     let onDisconnectCallback = _noop;
+    let aliveInterval;
 
     dispatch(sendConnection(host, ws));
     ws.onopen = () => {
       defer.resolve({ socket: ws, onDisconnect:setDisconnectCallback });
       dispatch(connectionSuccess(host, ws));
+
+      //TODO heroku sockets workaround to be improved
+      aliveInterval = setInterval(()=>{
+        ws.send(JSON.stringify({
+          command:'ALIVE',
+          value:Math.floor(Math.random()*1000)
+        }));
+      }, Math.floor(Math.random()*20000));
     };
 
     ws.onclose = () => {
       dispatch(closeConnection(host, ws));
       onDisconnectCallback();
+      clearInterval(aliveInterval);
     };
 
     ws.onerror = function (event) {

@@ -1,84 +1,25 @@
-@import "./bootstrap.min.css";
-
-html, body {
-  background-color: transparent;
-  font-size:10px;
-  height: 100%;
-  margin: 0;
-}
-body {
-  -webkit-app-region: drag;
-  border:2px solid firebrick
-}
-input {
-  -webkit-app-region: no-drag;
-}
-* {
-  box-sizing: border-box;
-}
+@import '~angular-material/angular-material.scss';
+@import './clock-component/clock';
 
 @font-face {
-  font-family: 'alarm clock';
-  src: url('font/alarm clock.woff2') format('woff2');
+  font-family: 'WorkSans-ExtraLight';
+  /* TODO fix route, here we shouldn't know about parent folders */
+  src: url('./font/WorkSans-ExtraLight.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
 
-.body-wrapper {
-  display: table;
+html, body {
+  background-color: transparent;
+  font-family: 'WorkSans-ExtraLight';
 }
 
-#content {
-  font-family: 'alarm clock', Arial, serif;
-  font-size: 4.2em;
-  display: table-cell;
+body {
+  -webkit-app-region: drag;
 }
 
-#main {
-  display: table;
-  width: 100%;
-
-  &-controls {
-    display: table-cell;
-    margin-left: 0.8em;
-    margin-top: 0.5em;
-  }
-}
-[disabled]{
-  opacity: 0.5;
-}
-.control {
-  display: table-cell;
-  font-size: 1em;
-
-  &--time-button {
-    float: left;
-  }
-  &-wrapper {
-    clear: left;
-  }
-}
-
-#text-custom-time {
-  clear: both;
-  float: left;
-  width: 4em;
-}
-
-.table {
-  display: table;
-
-  &-row {
-    display: table-row;
-  }
-
-  &-cell {
-    display: table-cell;
-
-    > * {
-      width: 100%;
-    }
-  }
+input {
+  -webkit-app-region: no-drag;
 }
 
 .blink {
@@ -87,4 +28,29 @@ input {
 
 @keyframes blinker {
   50% { opacity: 0; }
+}
+/* angular material overwrites */
+.settings {
+  width: 100%;
+  max-width: none;
+}
+md-toolbar:not(.md-menu-toolbar) {
+  background-color: white;
+  color: grey;
+}
+
+md-toolbar md-icon svg {
+  fill: grey;
+}
+
+md-toolbar md-button.md-icon-button {
+  min-width: 40px;
+}
+
+md-toolbar clipboard {
+  cursor: pointer;
+}
+
+md-sidenav section {
+  padding: 1em;
 }

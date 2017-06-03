@@ -5,14 +5,15 @@ import Clock from '../clock-component/clock-timer/clock';
 // with own state and inputs with proper interface,
 // other component would be connectionHandler
 
-export default function (connector, $rootScope, $scope) {
+export default function (connector, $rootScope, $scope, $mdSidenav) {
   const _this = this;
   const clock = new Clock({ tickTime: 300 });
 
   $scope.model = {};
 
-  //$scope.model.host = 'ws://guarded-eyrie-7081.herokuapp.com';
-  $scope.model.host = 'ws://localhost:5000';
+  $scope.model.host = WEBPACK.PRODUCTION ?
+    'ws://remote-countdown.herokuapp.com/' :
+    'ws://localhost:5000';
 
   connector.subscribe((connectionState) => {
 
@@ -58,6 +59,20 @@ export default function (connector, $rootScope, $scope) {
   this.resume = () => connector.sendCommand('RESUME');
   this.disconnect = connector.closeConnection;
   this.getConnectionState = connector.getState;
+  this.sideClose = () => {
+    $mdSidenav('left').close();
+  };
+  this.sideOpen = () => {
+    $mdSidenav('left').open();
+  };
+
+  $scope.$watch('godmodoro.getConnectionState().activeSessionId', (activeSessionId)=>{
+      if(activeSessionId){
+        $mdSidenav('left').close();
+      } else {
+        $mdSidenav('left').open();
+      }
+  });
 
   function resetJoinSessionInputValue() {
     $scope.model.sessionToJoin = undefined;

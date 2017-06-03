@@ -4,8 +4,8 @@ var socketServer = function () {
   var express = require("express");
   var app = express();
   var port = process.env.PORT || 5000;
-//TODO wrap into socket.countdownData object the different related variables
-  app.use(express.static(__dirname + "/"));
+  var path = require('path');
+  app.use('/', express.static(path.join(__dirname, '../../dist/client')));
 
   var server = http.createServer(app);
   server.listen(port);
@@ -55,24 +55,25 @@ var socketServer = function () {
     sockets.push(socket);
 
     socket.on('message', function (data) {
-      console.log("message", data);
+      console.log('.');
       onSocketMessageReceived(data, socket);
     });
 
     socket.on('close', function () {
-      console.log("socket closed");
+      console.log("socket closed", socket);
       onSocketClose(socket, sockets);
     });
 
     socket.on('error', function (err) {
       console.log("ERROR", err);
     });
+
+    socket.on('timeout', function(){
+      console.log('timeout', socket);
+    })
   }
 
   function onSocketMessageReceived(dataString, socket) {
-    console.log(dataString, socket.sessionId);
-
-    console.log("received", dataString, socket.sessionId, socket.sessionIdJoined);
     var data = JSON.parse(dataString);
     if (data.command === "CREATE") {
       socket.pauses = [];
@@ -157,6 +158,11 @@ var socketServer = function () {
 
       socket.sessionIdJoined = undefined;
       socket.send(JSON.stringify(messageData));
+    } else if(data.command === 'ALIVE'){
+      socket.send(JSON.stringify({
+        command:'ALIVE_RECEIVED',
+        value:Math.floor(Math.random()*1000)
+      }));
     }
   }
 
@@ -204,8 +210,9 @@ var socketServer = function () {
         });
       }
       socket.close();
-      socket.destroy();
       console.log('Socket closed!');
+      socket.destroy();
+
       for (var i = 0; i < sockets.length; i++) {
         if (sockets[i] == socket) {
           sockets.splice(i, 1);
@@ -234,3 +241,4 @@ var socketServer = function () {
     return false;
   }
 }();
+

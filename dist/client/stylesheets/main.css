@@ -13693,16 +13693,18 @@ md-toolbar {
   vertical-align: middle;
   text-align: center;
   padding: 0.2em;
-  line-height: 2em; }
+  line-height: 2em;
+  background-color: white; }
 
-.rc-time-input {
+md-input-container input.rc-time-input {
   border: none;
   padding: 0.2em;
   min-width: 2em;
   font-family: inherit;
   /* like buttons... */
   line-height: 36px;
-  min-height: 36px; }
+  min-height: 36px;
+  background-color: white; }
 
 .clock-tools md-input-container {
   margin: 0;
@@ -13714,7 +13716,15 @@ md-toolbar {
   min-height: 2em;
   vertical-align: middle;
   text-align: center;
-  margin: 0; }
+  margin: 0;
+  background-color: white; }
+
+body:hover {
+  border: 1px solid red; }
+
+@media (min-width: 600px) and (min-height: 400px) {
+  .clock {
+    font-size: 14em; } }
 
 @font-face {
   font-family: 'WorkSans-ExtraLight';
@@ -13752,5 +13762,11 @@ md-toolbar:not(.md-menu-toolbar) {
 md-toolbar md-icon svg {
   fill: grey; }
 
+md-toolbar md-button {
+  min-width: 40px; }
+
 md-toolbar clipboard {
   cursor: pointer; }
+
+md-sidenav section {
+  padding: 1em; }

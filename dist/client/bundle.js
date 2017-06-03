@@ -77709,8 +77709,8 @@
 
 	  $scope.model = {};
 
-	  $scope.model.host = 'ws://remote-countdown.herokuapp.com/';
-	  //$scope.model.host = 'ws://localhost:5000';
+	  //$scope.model.host = 'ws://remote-countdown.herokuapp.com/';
+	  $scope.model.host = 'ws://localhost:5000';
 
 	  connector.subscribe(function (connectionState) {
 
@@ -77766,11 +77766,15 @@
 	  this.sideOpen = function () {
 	    $mdSidenav('left').open();
 	  };
+
 	  $scope.$watch('godmodoro.getConnectionState().activeSessionId', function (activeSessionId) {
 	    if (activeSessionId) {
 	      $mdSidenav('left').close();
+	    } else {
+	      $mdSidenav('left').open();
 	    }
 	  });
+
 	  function resetJoinSessionInputValue() {
 	    $scope.model.sessionToJoin = undefined;
 	  }

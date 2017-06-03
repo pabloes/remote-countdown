@@ -43,6 +43,10 @@ md-toolbar md-icon svg {
   fill: grey;
 }
 
+md-toolbar md-button.md-icon-button {
+  min-width: 40px;
+}
+
 md-toolbar clipboard {
   cursor: pointer;
 }

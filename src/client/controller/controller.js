@@ -11,8 +11,9 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
 
   $scope.model = {};
 
-  //$scope.model.host = 'ws://remote-countdown.herokuapp.com/';
-  $scope.model.host = 'ws://localhost:5000';
+  $scope.model.host = WEBPACK.PRODUCTION ?
+    'ws://remote-countdown.herokuapp.com/' :
+    'ws://localhost:5000';
 
   connector.subscribe((connectionState) => {
 

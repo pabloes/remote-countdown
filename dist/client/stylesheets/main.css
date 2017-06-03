@@ -13762,7 +13762,7 @@ md-toolbar:not(.md-menu-toolbar) {
 md-toolbar md-icon svg {
   fill: grey; }
 
-md-toolbar md-button {
+md-toolbar md-button.md-icon-button {
   min-width: 40px; }
 
 md-toolbar clipboard {

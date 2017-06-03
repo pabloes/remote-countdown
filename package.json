@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "start": "webpack && npm run server",
-    "start-dev": "forever stopall && forever start ./src/server/server.js && npm run webpack-dev-server",
+    "start-dev": "forever stopall && forever start ./src/server/server.js && npm run webpack-dev-server --dev",
     "stop-dev": "forever stopall",
     "nwjs": "webpack && grunt nwjs",
     "test-watch": "karma start",

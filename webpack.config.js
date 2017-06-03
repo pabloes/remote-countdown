@@ -1,6 +1,8 @@
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var extractCSS = new ExtractTextPlugin('stylesheets/[name].css');
-
+var argv = require('yargs').argv;
+var webpack = require('webpack');
+console.log(argv);
 module.exports = {
     context: __dirname + "",
     entry: [
@@ -45,7 +47,12 @@ module.exports = {
         ]
     },
     plugins:[
-        extractCSS
+        extractCSS,
+          new webpack.DefinePlugin({
+            WEBPACK: {
+                PRODUCTION:JSON.stringify(argv.dev !== undefined?false:true)
+            }
+          })
     ],
     devServer:{
         contentBase:'dist/client/'

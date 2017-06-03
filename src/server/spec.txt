@@ -12,7 +12,8 @@ sessionCollection:[
         id:string
         owner:socket
         members:[socket],
-        countdownData:{
+        clocks:[{
+            id:Number,
             pauses:[{
                         pauseDate,
                         resumeDate
@@ -20,6 +21,6 @@ sessionCollection:[
             initialDate:Date
             timeZoneOffset:number|string //NOT NECESSARY?
             countdownSeconds:Number
-        }
+        }]
     }
 ]

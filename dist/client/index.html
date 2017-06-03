@@ -5,7 +5,6 @@
     <title></title>
     <script src="bundle.js"></script>
     <link href="stylesheets/main.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body layout="column" ng-app="godmodoro" ng-controller="godmodoro as godmodoro" ng-cloak>
 <md-sidenav class="settings" md-component-id="left"
@@ -26,13 +25,14 @@
     </md-toolbar>
     <br />
     <section>
-        <div layout="row" class="md-block" ng-if="!godmodoro.getConnectionState().connected">
-            <md-button class="md-raised md-primary md-fab" ng-click="godmodoro.connect(model.host)"
+        <div layout="row" layout-align="default start" class="md-block" ng-if="!godmodoro.getConnectionState().connected">
+            <md-button flex="20" class="md-raised md-primary" ng-click="godmodoro.connect(model.host)"
                        ng-disabled="!model.host || godmodoro.getConnectionState().connecting"
             >
-                <md-icon class="material-icons">power</md-icon>
+                Connect
             </md-button>
             <md-input-container flex class="md-icon-float md-block md-title">
+                <label>host</label>
                 <input ng-disabled="godmodoro.getConnectionState().connected || godmodoro.getConnectionState().connecting"
                        ng-model="model.host"
                        ng-if="!godmodoro.getConnectionState().connected"
@@ -40,14 +40,15 @@
             </md-input-container>
         </div>
 
-        <div layout="row"
+        <div layout="row" layout-align="default start"
              ng-show="godmodoro.getConnectionState().connected && (godmodoro.getConnectionState().sessionOwner || !godmodoro.getConnectionState().activeSessionId)">
-            <md-button class="md-raised md-primary md-fab"
+            <md-button class="md-raised md-primary"
+                       flex="20"
                        ng-click="godmodoro.createSession(godmodoro.sessionToCreate)"
                        ng-hide="godmodoro.getConnectionState().activeSessionId"
 
             >
-                <md-icon class="material-icons">trending_flat</md-icon>
+                Create session
             </md-button>
             <md-input-container flex class="md-icon-float md-block md-title">
                 <label ng-bind="godmodoro.getConnectionState().activeSessionId?'session Id':'Type session id to create or leave empty to generate'"></label>
@@ -56,13 +57,13 @@
 
         </div>
 
-        <div layout="row"
+        <div layout="row" layout-align="default start"
              ng-show="godmodoro.getConnectionState().connected && !godmodoro.getConnectionState().sessionOwner">
-            <md-button class="md-raised md-primary md-fab"
+            <md-button flex="20" class="md-raised md-primary"
                        ng-click="godmodoro.joinSession(model.sessionToJoin)"
                        ng-hide="godmodoro.getConnectionState().activeSessionId"
             >
-                <md-icon class="material-icons">trending_flat</md-icon>
+                Join session
             </md-button>
             <md-input-container flex class="md-icon-float md-block md-title" >
                 <label ng-bind="godmodoro.getConnectionState().activeSessionId?'session Id':'type session Id to join'"></label>

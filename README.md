@@ -1,6 +1,8 @@
 # remote-countdown
 Small multiplattform app to sync a timer between several remote clients.
 
+Live example: http://remote-countdown.herokuapp.com/
+
 ### Why?
 Working in my company, the team does small presentations in an online meeting of the work done along a SCRUM sprint. 
 The problem is that these presentations usually spend more time than they should.

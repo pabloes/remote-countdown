@@ -77709,8 +77709,7 @@
 
 	  $scope.model = {};
 
-	  $scope.model.host = 'ws://remote-countdown.herokuapp.com/';
-	  //$scope.model.host = 'ws://localhost:5000';
+	  $scope.model.host =  true ? 'ws://remote-countdown.herokuapp.com/' : 'ws://localhost:5000';
 
 	  connector.subscribe(function (connectionState) {
 

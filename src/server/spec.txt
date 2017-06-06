@@ -1,19 +1,20 @@
 Server store
 
-socketCollection:[
+-socketCollection:[
     {
-        socket:Socket
-        socketId:String //NOT NECESSARY?
-        ip:String
+        -socket:Socket
+        -socketId:String //NOT NECESSARY?
+        -ip:String
     },
 ]
-sessionCollection:[
+-sessionCollection:[
     {
         id:string
-        owner:socket
-        members:[socket],
+        -owner:socket
+        -members:[socket],
         clocks:[{
             id:Number,
+            name:String,
             pauses:[{
                         pauseDate,
                         resumeDate

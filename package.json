@@ -62,6 +62,7 @@
     "lodash": "~4.11.1",
     "redux": "^3.6.0",
     "redux-logger": "^3.0.1",
+    "redux-node-logger": "^0.1.0",
     "redux-thunk": "^2.2.0"
   }
 }

@@ -3,25 +3,28 @@ Server store
 -socketCollection:[
     {
         -socket:Socket
-        -socketId:String //NOT NECESSARY?
+        -id:String //NOT NECESSARY?
         -ip:String
     },
 ]
 -sessionCollection:[
     {
         id:string
-        -owner:socket
-        -members:[socket],
-        clocks:[{
-            id:Number,
-            name:String,
-            pauses:[{
-                        pauseDate,
-                        resumeDate
-                    }]
-            initialDate:Date
-            timeZoneOffset:number|string //NOT NECESSARY?
-            countdownSeconds:Number
-        }]
+        -owner:socketId
+        -members:[socketId],
+        clocks:[id,]
     }
 ]
+
+clocks:[{
+
+                                      id:Number,
+                                      name:String,
+                                      pauses:[{
+                                                  pauseDate,
+                                                  resumeDate
+                                              }]
+                                      initialDate:Date
+                                      timeZoneOffset:number|string //NOT NECESSARY?
+                                      countdownSeconds:Number
+                                  }]

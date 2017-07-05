@@ -13,7 +13,8 @@
     "collaboration"
   ],
   "scripts": {
-    "start-dev": "forever stopall && forever start ./src/server/server.js && npm run webpack-dev-server",
+    "start": "webpack && npm run server",
+    "start-dev": "forever stopall && forever start ./src/server/server.js && npm run webpack-dev-server --dev",
     "stop-dev": "forever stopall",
     "nwjs": "webpack && grunt nwjs",
     "test-watch": "karma start",
@@ -31,7 +32,8 @@
     "url": "https://gitlab.com/pabloes/remote-countdown/issues"
   },
   "homepage": "https://gitlab.com/pabloes/remote-countdown#README",
-  "devDependencies": {
+  "dependencies": {
+    "angular-clipboard": "^1.5.0",
     "babel-core": "~6.7.4",
     "babel-loader": "~6.2.4",
     "babel-plugin-transform-runtime": "~6.7.5",
@@ -44,25 +46,35 @@
     "grunt": "~1.0.1",
     "grunt-nw-builder": "~3.1.0",
     "grunt-webpack": "~1.0.11",
+    "html-loader": "^0.4.5",
     "jasmine-core": "~2.4.1",
     "karma": "~0.13.22",
     "karma-chrome-launcher": "~0.2.3",
     "karma-jasmine": "~0.3.8",
     "karma-webpack": "~1.7.0",
+    "node-sass": "3.8.0",
     "nw-builder": "~3.2.0",
     "sass-loader": "~3.2.0",
     "style-loader": "~0.13.1",
     "url-loader": "~0.5.7",
     "webpack": "~1.13.0",
     "webpack-dev-server": "~1.14.1",
-    "node-sass": "3.8.0"
-  },
-  "dependencies": {
-    "angular": "~1.5.5",
+    "angular": "~1.6.4",
+    "angular-animate": "^1.6.4",
+    "angular-aria": "^1.6.4",
+    "angular-material": "^1.1.4",
     "lodash": "~4.11.1",
     "redux": "^3.6.0",
     "redux-logger": "^3.0.1",
-    "redux-node-logger": "^0.1.0",
+    "redux-thunk": "^2.2.0",
+    "domain": "0.0.1",
+    "express": "^4.13.3",
+    "http": "0.0.0",
+    "md5": "^2.0.0",
+    "websocket.io": "^0.2.1",
+    "webpack": "~1.13.0",
+    "grunt-cli": "^1.2.0",
     "redux-thunk": "^2.2.0"
+
   }
 }

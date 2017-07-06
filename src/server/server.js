@@ -20,14 +20,21 @@ var socketServer = function () {
     easyLogger
   ));
 
-  socketListen(9000);
+  socketListen();
 
   function onConnection(socket) {
-    store.dispatch(actions.storeSocket(socket));
+    var storeSocketAction = store.dispatch(actions.storeSocket(socket));
 
     socket.on('close', ()=>{
-      store.dispatch(actions.removeSocket(socket));
+      store.dispatch(actions.removeSocket(storeSocketAction.payload.id));
     });
+
+    socket.on('message', (m)=>{
+      m = JSON.parse(m);
+      if (m.command === 'CREATE'){
+        store.dispatch(actions.createSession(m.sessionId, storeSocketAction.payload.id));
+      }
+    })
   }
 
   function socketListen() {

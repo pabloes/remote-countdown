@@ -10,16 +10,27 @@ function storeSocket(socket) {
   };
 }
 
-function removeSocket(socket) {
+function removeSocket(socketId) {
   return {
     type: 'REMOVE_SOCKET',
     payload: {
-      socket: socket,
+      socketId,
     },
   };
 }
 
+function createSession(sessionId, owner){
+  return {
+    type: 'CREATE_SESSION',
+    payload: {
+      sessionId: sessionId || _.uniqueId('SESSION_'),
+      owner
+    }
+  }
+}
+
 module.exports = {
   storeSocket,
-  removeSocket
+  removeSocket,
+  createSession
 };

@@ -30,7 +30,7 @@ export default (state = {}, action) => {
         activeSessionId: undefined,
         sessionOwner: true,//TODO should it be placed in the success?
       });
-    case 'COMMAND_RECEIVED_NEW':
+    case 'COMMAND_RECEIVED_CREATE':
       return Object.assign({}, state, {
         activeSessionId: action.data.sessionId,
         sessionToCreate: action.data.sessionId,

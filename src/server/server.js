@@ -29,12 +29,18 @@ var socketServer = function () {
       store.dispatch(actions.removeSocket(storeSocketAction.payload.id));
     });
 
-    socket.on('message', (m)=>{
-      m = JSON.parse(m);
-      if (m.command === 'CREATE'){
-        store.dispatch(actions.createSession(m.sessionId, storeSocketAction.payload.id));
-      }
-    })
+    const socketMessageCallbacks = {
+      CREATE: (data, socket) => {
+        const createSessionAction = store.dispatch(actions.createSession(data.sessionId, storeSocketAction.payload.id));
+        socket.send(JSON.stringify({ command: 'CREATE', sessionId: createSessionAction.payload.sessionId }));
+      },
+      ALIVE: ()=>{},//TODO
+    };
+
+    socket.on('message', _.flow(
+      JSON.parse,
+      data => socketMessageCallbacks[data.command](data, socket)
+    ));
   }
 
   function socketListen() {

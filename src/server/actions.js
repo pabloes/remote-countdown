@@ -29,8 +29,29 @@ function createSession(sessionId, owner){
   }
 }
 
+function joinSession(sessionId, socketId) {
+  return {
+    type: 'JOIN_SESSION',
+    payload: {
+      sessionId: sessionId,
+      socketId: socketId,
+    },
+  };
+}
+
+function closeSession(sessionId) {
+  return {
+    type: 'CLOSE_SESSION',
+    payload: {
+      sessionId: sessionId,
+    },
+  };
+}
+
 module.exports = {
   storeSocket,
   removeSocket,
-  createSession
+  createSession,
+  joinSession,
+  closeSession,
 };

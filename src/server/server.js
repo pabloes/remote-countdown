@@ -32,15 +32,48 @@ var socketServer = function () {
     const socketMessageCallbacks = {
       CREATE: (data, socket) => {
         const createSessionAction = store.dispatch(actions.createSession(data.sessionId, storeSocketAction.payload.id));
-        socket.send(JSON.stringify({ command: 'CREATE', sessionId: createSessionAction.payload.sessionId }));
+        socket.send(JSON.stringify({ command: 'CREATE_SUCCESS', sessionId: createSessionAction.payload.sessionId }));
       },
-      ALIVE: ()=>{},//TODO
+      JOIN: (data, socket) => {
+        const joinSessionAction = store.dispatch(actions.joinSession(data.sessionId, storeSocketAction.payload.id));
+        socket.send(JSON.stringify({ command: 'JOIN_SUCCESS', sessionId: joinSessionAction.payload.sessionId }));
+      },
+      ALIVE: ()=>socket.send(JSON.stringify({ command: 'ALIVE'})),//TODO
+      CD: ()=>{},
+      CLOSE_SESSION: ()=>{
+        const closeSessionActions = store.dispatch(actions.closeSession(data.sessionId));
+        /*TODO old:
+         sendToMembersOfMySession(socket, messageData);
+         cleanSessionIdJoinedSockets(socket.sessionId);
+         socket.pauses = [];
+         */
+      },
+      LEAVE_SESSION: ()=>{
+        /*TODO OLD:
+         var messageData = {
+         command: 'CLOSE_SESSION',
+         sessionId: data.sessionId
+         };
+
+         socket.sessionIdJoined = undefined;
+         socket.send(JSON.stringify(messageData));
+         */
+      },
     };
 
     socket.on('message', _.flow(
       JSON.parse,
-      data => socketMessageCallbacks[data.command](data, socket)
+      ensureCommandExists,
+      data => data?socketMessageCallbacks[data.command](data, socket):_.noop()
     ));
+
+    function ensureCommandExists(data){
+      if(!socketMessageCallbacks[data.command]){
+        console.log('command does not exists',data.command);
+        return false;
+      }
+      return data;
+    }
   }
 
   function socketListen() {

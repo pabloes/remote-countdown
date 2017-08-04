@@ -1,4 +1,5 @@
 import Clock from '../clock-component/clock-timer/clock';
+import _ from 'lodash';
 
 //TODO clock as component
 //TODO in connector, separate sessionHandler as component
@@ -34,7 +35,11 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
 
   connector.onCommandReceived('CD',
     (countdownData) => {
-      _this.countdownData = countdownData;
+    console.log('CD received', countdownData);
+      //_this.countdownData = countdownData;
+      const clockIndex = _.findIndex(clocks, { id: countdownData.clockId });
+      clocks[clockIndex] = Object.assign({}, clocks[clockIndex], countdownData, {seconds:countdownData.countdown});
+      console.log(clocks);
     }
   );
 
@@ -62,7 +67,8 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
   this.createSession = connector.createSession;
   this.closeSession = connector.closeSession;
   this.leaveSession = connector.leaveSession;
-  this.startTimer = (seconds) => connector.sendCommand('CD', { seconds: seconds });
+  this.startTimer = (clockId, seconds) =>
+    connector.sendCommand('CD', { clockId: clockId, seconds: seconds });
   this.pause = () => connector.sendCommand('PAUSE');
   this.resume = () => connector.sendCommand('RESUME');
   this.disconnect = connector.closeConnection;

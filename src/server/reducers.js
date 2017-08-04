@@ -61,21 +61,32 @@ module.exports = function (state = { socketCollection: [], sessionCollection: []
 
     case 'ADD_CLOCK':
       return getExtendedState({
-        clocks: state.clocks.concat([action.payload.clockId]),
+        clocks: state.clocks.concat([{
+          id:action.payload.clockId,
+          pauses:[],
+          initialServerDate: null,
+          countdown: null,
+        }]),
         sessionCollection: state.sessionCollection.reduce(
           function (acc, current) {
             //TODO we are modifying, problem with redux immutable?
-            current.clocks.push({
-              id:action.payload.clockId,
-              pauses:[],
-              initialServerDate: null,
-              countdown: null,
-            });
+            current.clocks.push(action.payload.clockId);
             acc.push(current);
             return acc;
           }, []),
       });
 
+    case 'COUNTDOWN':
+      return getExtendedState({
+        clocks: state.clocks.reduce((acc, clock) => {
+          if (clock.clockId === action.payload.id) {
+            Object.assign(clock, action.payload);//modifying an object
+          }
+          acc.push(clock);
+
+          return acc;
+        }, []),
+      })
     default:
       return state;
   }

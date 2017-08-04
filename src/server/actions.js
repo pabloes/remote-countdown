@@ -58,6 +58,17 @@ function addClock(sessionId) {
   };
 }
 
+function countDown(data){
+  return {
+    type: 'COUNTDOWN',
+    payload: {
+      id:data.clockId,
+      initialServerDate:new Date(),
+      countdown:data.seconds,
+    },
+  };
+}
+
 module.exports = {
   storeSocket,
   removeSocket,
@@ -65,4 +76,5 @@ module.exports = {
   joinSession,
   closeSession,
   addClock,
+  countDown,
 };

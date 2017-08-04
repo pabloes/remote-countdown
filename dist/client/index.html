@@ -97,12 +97,12 @@
             <div ng-if="godmodoro.getConnectionState().activeSessionId">
                 <clock ng-repeat="clock in godmodoro.getClocks() track by clock.id"
                        editable="godmodoro.getConnectionState().sessionOwner"
-                       on-countdown="godmodoro.startTimer(seconds)"
-                       on-pause="godmodoro.pause()"
-                       on-resume="godmodoro.resume()"
-                       initial-server-date="godmodoro.initialServerDate"
-                       countdown-data="godmodoro.countdownData"
-                       pauses="godmodoro.pauses"
+                       on-countdown="godmodoro.startTimer(clock.id, seconds)"
+                       on-pause="godmodoro.pause(clock.id)"
+                       on-resume="godmodoro.resume(clock.id)"
+                       initial-server-date="clock.initialServerDate"
+                       countdown-data="clock"
+                       pauses="clock.pauses"
                 ></clock>
                 <md-button flex="20" class="md-raised md-primary"
                            ng-click="godmodoro.addClock()"

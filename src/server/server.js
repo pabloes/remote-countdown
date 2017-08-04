@@ -53,7 +53,16 @@ var socketServer = function () {
         socket.send(JSON.stringify({ command: 'ADD_CLOCK', clockId: addClockAction.payload.clockId }));
       },
       ALIVE: ()=>socket.send(JSON.stringify({ command: 'ALIVE'})),//TODO
-      CD: ()=>{},
+      CD: (data, socket) => {
+        const countDownAction = store.dispatch(actions.countDown(data));
+        console.log('-----------_>', countDownAction);
+        socket.send(JSON.stringify({
+          command: 'CD',
+          clockId: data.clockId,
+          initialServerDate: countDownAction.payload.initialServerDate,
+          countdown: countDownAction.payload.countdown,
+        }));
+      },
       CLOSE_SESSION: ()=>{
         const closeSessionActions = store.dispatch(actions.closeSession(data.sessionId));
         /*TODO old:

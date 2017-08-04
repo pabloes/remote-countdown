@@ -18,7 +18,7 @@ Server store
 
 clocks:[{
 
-                                      id:Number,
+                                      id:Number,//server clockId ? -> TODO yes, ask for clock id when create session
                                       name:String,
                                       pauses:[{
                                                   pauseDate,

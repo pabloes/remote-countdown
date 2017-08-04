@@ -1,4 +1,5 @@
 var socketServer = function () {
+  //TODO when socket disconnect server goes down
   var http = require("http");
   var express = require("express");
   var _ = require('lodash');
@@ -21,14 +22,22 @@ var socketServer = function () {
   ));
 
   socketListen();
+  process.on('uncaughtException', function (err) {
+    //TODO https://stackoverflow.com/questions/17245881/node-js-econnreset
+    console.log("uncaughtException");
+    console.error(err.stack);
+    //process.exit();
+  });
 
   function onConnection(socket) {
     var storeSocketAction = store.dispatch(actions.storeSocket(socket));
 
     socket.on('close', ()=>{
-      store.dispatch(actions.removeSocket(storeSocketAction.payload.id));
+        store.dispatch(actions.removeSocket(storeSocketAction.payload.id));
     });
-
+    socket.on('disconnect', function () {
+     console.log('disconnect!!!!!!!!!!!!')
+    });
     const socketMessageCallbacks = {
       CREATE: (data, socket) => {
         const createSessionAction = store.dispatch(actions.createSession(data.sessionId, storeSocketAction.payload.id));
@@ -37,6 +46,11 @@ var socketServer = function () {
       JOIN: (data, socket) => {
         const joinSessionAction = store.dispatch(actions.joinSession(data.sessionId, storeSocketAction.payload.id));
         socket.send(JSON.stringify({ command: 'JOIN_SUCCESS', sessionId: joinSessionAction.payload.sessionId }));
+      },
+      ADD_CLOCK: (data, socket) => {
+        console.log('ADD_CLOCK sessionId',data.sessionId);
+        const addClockAction = store.dispatch(actions.addClock(data.sessionId));
+        socket.send(JSON.stringify({ command: 'ADD_CLOCK', clockId: addClockAction.payload.clockId }));
       },
       ALIVE: ()=>socket.send(JSON.stringify({ command: 'ALIVE'})),//TODO
       CD: ()=>{},

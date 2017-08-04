@@ -2,7 +2,7 @@
 //return {...state, socketCollection: [...socketCollection, action.payload.socket]});
 var _ = require('lodash');
 //TODO unit tests would be good
-module.exports = function (state = { socketCollection: [], sessionCollection: [] }, action) {
+module.exports = function (state = { socketCollection: [], sessionCollection: [], clocks: [] }, action) {
   switch (action.type) {
     case 'STORE_SOCKET':
       return getExtendedState({
@@ -20,7 +20,7 @@ module.exports = function (state = { socketCollection: [], sessionCollection: []
 
       return getExtendedState({
         socketCollection: state.socketCollection.filter(x => x.id !== action.payload.socketId),
-        sessionCollection: state.sessionCollection.reduce(function(acc, current){
+        sessionCollection: state.sessionCollection.reduce(function (acc, current) {
 
           //remove the session if owner disconnects
           if (current.owner !== action.payload.socketId) acc.push(current);
@@ -55,7 +55,26 @@ module.exports = function (state = { socketCollection: [], sessionCollection: []
 
       return state;
     case 'CLOSE_SESSION':
-      return getExtendedState({ sessionCollection:_.without(state.sessionCollection, { id: action.payload.sessionId }) });
+      return getExtendedState({
+        sessionCollection: _.without(state.sessionCollection, { id: action.payload.sessionId }),
+      });
+
+    case 'ADD_CLOCK':
+      return getExtendedState({
+        clocks: state.clocks.concat([action.payload.clockId]),
+        sessionCollection: state.sessionCollection.reduce(
+          function (acc, current) {
+            //TODO we are modifying, problem with redux immutable?
+            current.clocks.push({
+              id:action.payload.clockId,
+              pauses:[],
+              initialServerDate: null,
+              countdown: null,
+            });
+            acc.push(current);
+            return acc;
+          }, []),
+      });
 
     default:
       return state;

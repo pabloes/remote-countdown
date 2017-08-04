@@ -25,6 +25,12 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
     //TODO review
     $scope.$applyAsync();
   });
+  connector.onCommandReceived('ADD_CLOCK',
+    (data) => {
+      console.log('received command data', data);
+      clocks.push({ id: data.clockId });
+    }
+  );
 
   connector.onCommandReceived('CD',
     (countdownData) => {
@@ -50,6 +56,8 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
     });
   };
 
+  const clocks = [];
+
   this.joinSession = connector.joinSession;
   this.createSession = connector.createSession;
   this.closeSession = connector.closeSession;
@@ -59,6 +67,9 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
   this.resume = () => connector.sendCommand('RESUME');
   this.disconnect = connector.closeConnection;
   this.getConnectionState = connector.getState;
+  this.addClock = () => connector.sendCommand('ADD_CLOCK', { sessionId: this.getConnectionState().activeSessionId });
+  this.getClocks = () => clocks;
+
   this.sideClose = () => {
     $mdSidenav('left').close();
   };

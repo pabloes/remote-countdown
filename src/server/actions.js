@@ -48,10 +48,21 @@ function closeSession(sessionId) {
   };
 }
 
+function addClock(sessionId) {
+  return {
+    type: 'ADD_CLOCK',
+    payload: {
+      sessionId: sessionId,
+      clockId: _.uniqueId('clock_'),
+    },
+  };
+}
+
 module.exports = {
   storeSocket,
   removeSocket,
   createSession,
   joinSession,
   closeSession,
+  addClock,
 };

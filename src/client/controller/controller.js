@@ -32,6 +32,7 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
       clocks.push({ id: data.clockId });
     }
   );
+  connector.onCommandReceived('JOIN_SUCCESS', data => clocks = data.clocks);
 
   connector.onCommandReceived('CD',
     (countdownData) => {
@@ -58,7 +59,7 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
     });
   };
 
-  const clocks = [];
+  let clocks = [];
 
   this.joinSession = connector.joinSession;
   this.createSession = connector.createSession;

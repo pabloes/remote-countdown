@@ -45,17 +45,22 @@ var socketServer = function () {
       },
       JOIN: (data, socket) => {
         const joinSessionAction = store.dispatch(actions.joinSession(data.sessionId, storeSocketAction.payload.id));
-        socket.send(JSON.stringify({ command: 'JOIN_SUCCESS', sessionId: joinSessionAction.payload.sessionId }));
+
+        const sessionIndex = _.findIndex(store.getState().sessionCollection, {id:joinSessionAction.payload.sessionId});
+        const clockIds = store.getState().sessionCollection[sessionIndex].clocks;
+        const sessionClocks = _.filter(store.getState().clocks, (clock) => {
+          return clockIds.indexOf(clock.id) >= 0;
+        });
+
+        socket.send(JSON.stringify({ command: 'JOIN_SUCCESS', sessionId:joinSessionAction.payload.sessionId, clocks: sessionClocks }));
       },
       ADD_CLOCK: (data, socket) => {
-        console.log('ADD_CLOCK sessionId',data.sessionId);
         const addClockAction = store.dispatch(actions.addClock(data.sessionId));
         socket.send(JSON.stringify({ command: 'ADD_CLOCK', clockId: addClockAction.payload.clockId }));
       },
       ALIVE: ()=>socket.send(JSON.stringify({ command: 'ALIVE'})),//TODO
       CD: (data, socket) => {
         const countDownAction = store.dispatch(actions.countDown(data));
-        console.log('-----------_>', countDownAction);
         socket.send(JSON.stringify({
           command: 'CD',
           clockId: data.clockId,

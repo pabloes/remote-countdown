@@ -106,6 +106,7 @@
                 ></clock>
                 <md-button flex="20" class="md-raised md-primary"
                            ng-click="godmodoro.addClock()"
+                           ng-if="godmodoro.getConnectionState().sessionOwner"
                 >
                     Add clock
                 </md-button>

@@ -79,7 +79,7 @@ module.exports = function (state = { socketCollection: [], sessionCollection: []
     case 'COUNTDOWN':
       return getExtendedState({
         clocks: state.clocks.reduce((acc, clock) => {
-          if (clock.clockId === action.payload.id) {
+          if (clock.id === action.payload.id) {
             Object.assign(clock, action.payload);//modifying an object
           }
           acc.push(clock);

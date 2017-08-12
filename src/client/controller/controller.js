@@ -43,7 +43,7 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
 
   connector.onCommandReceived('CLOSE_SESSION', () => {
     resetJoinSessionInputValue();
-    _this.countdownData = {};
+    clocks = [];
     $scope.$apply();
   });
 
@@ -51,7 +51,7 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
     connector.connect(host).then((connection) => {
       connection.onDisconnect(() => {
         resetJoinSessionInputValue();
-        _this.countdownData = {};
+        clocks = [];
         $scope.$apply();
       });
     }, (err) => {

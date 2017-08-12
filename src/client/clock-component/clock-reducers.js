@@ -3,7 +3,7 @@ export default (state = {timeString:'88:88'}, action) => {
     case 'APPLY_COUNTDOWN':
       return Object.assign({}, state, {countdownData:{
         countdown:action.countdownData && (action.countdownData.seconds || action.countdownData.countdown),
-        initialServerDate:action.countdownData && new Date(action.countdownData.startTime),
+        initialServerDate:action.countdownData && new Date(action.countdownData.initialServerDate),
         pauses:action.countdownData.pauses,
       }});
     default:

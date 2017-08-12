@@ -5,6 +5,7 @@ import thunkMiddleware from 'redux-thunk';
 import {createLogger} from 'redux-logger';
 const loggerMiddleware = createLogger();
 import Clock from './clock-timer/clock';
+import _ from 'lodash';
 
 export default function ($scope) {
   const clockTimer = new Clock({ tickTime: 300 });
@@ -40,7 +41,7 @@ export default function ($scope) {
 
   $scope.$watch('clock.countdownData',
     (countdownData) => {
-      if(countdownData){
+      if(countdownData && _.isNumber(countdownData.countdown)){
         store.dispatch(clockActions.applyCountdown(countdownData));
         clockTimer.applyCountdown(
           store.getState().countdownData.countdown,

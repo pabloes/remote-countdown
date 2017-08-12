@@ -41,19 +41,11 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
     }
   );
 
-  connector.onCommandReceived('CLOSE_SESSION', () => {
-    resetJoinSessionInputValue();
-    clocks = [];
-    $scope.$apply();
-  });
+  connector.onCommandReceived('CLOSE_SESSION', resetSession);
 
   this.connect = (host) => {
     connector.connect(host).then((connection) => {
-      connection.onDisconnect(() => {
-        resetJoinSessionInputValue();
-        clocks = [];
-        $scope.$apply();
-      });
+      connection.onDisconnect(resetSession);
     }, (err) => {
       console.log(err);
     });
@@ -89,7 +81,9 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
       }
   });
 
-  function resetJoinSessionInputValue() {
+  function resetSession(){
+    clocks = [];
     $scope.model.sessionToJoin = undefined;
+    $scope.$apply();
   }
 }

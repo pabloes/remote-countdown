@@ -32,6 +32,8 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
       clocks.push({ id: data.clockId });
     }
   );
+
+  connector.onCommandReceived('CLOCKS', data => clocks = data.clocks);
   connector.onCommandReceived('JOIN_SUCCESS', data => clocks = data.clocks);
 
   connector.onCommandReceived('CD',

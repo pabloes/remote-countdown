@@ -47,6 +47,15 @@ var socketServer = function () {
     socket.on('disconnect', function () {
      console.log('disconnect!!!!!!!!!!!!');
     });
+
+    function sendMessageToMemberOfSession(session, data){
+      const state = store.getState();
+      session.members.forEach((socketId)=>{
+        const memberSocket = state.socketCollection.find(socket=>socket.id === socketId).socket;
+        memberSocket.send(JSON.stringify(data));
+      });
+    }
+
     const socketMessageCallbacks = {
       CREATE: (data, socket) => {
         const createSessionAction = store.dispatch(actions.createSession(data.sessionId, storeSocketAction.payload.id));
@@ -66,6 +75,12 @@ var socketServer = function () {
       ADD_CLOCK: (data, socket) => {
         const addClockAction = store.dispatch(actions.addClock(data.sessionId));
         socket.send(JSON.stringify({ command: 'ADD_CLOCK', clockId: addClockAction.payload.clockId }));
+        const state = store.getState();
+        getSessionsWhichSocketIsOwner(storeSocketAction.payload.id, state.sessionCollection)
+          .forEach((session)=>sendMessageToMemberOfSession(session, {
+            command: 'CLOCKS',
+            clocks: state.clocks.filter((clock)=>session.clocks.indexOf(clock.id)>=0),
+          }));
       },
       ALIVE: ()=>socket.send(JSON.stringify({ command: 'ALIVE'})),//TODO
       CD: (data, socket) => {
@@ -78,17 +93,13 @@ var socketServer = function () {
         }));
 
         const state = store.getState();
-        getSessionsWhichSocketIsOwner(storeSocketAction.payload.id, state.sessionCollection).forEach((session)=>{
-          session.members.forEach((socketId)=>{
-            const memberSocket = state.socketCollection.find(socket=>socket.id === socketId).socket;
-            memberSocket.send(JSON.stringify({
-              command: 'CD',
-              clockId: data.clockId,
-              initialServerDate: countDownAction.payload.initialServerDate,
-              countdown: countDownAction.payload.countdown,
-            }));
-          });
-        });
+        getSessionsWhichSocketIsOwner(storeSocketAction.payload.id, state.sessionCollection)
+          .forEach((session)=>sendMessageToMemberOfSession(session, {
+            command: 'CD',
+            clockId: data.clockId,
+            initialServerDate: countDownAction.payload.initialServerDate,
+            countdown: countDownAction.payload.countdown,
+          }));
       },
       CLOSE_SESSION: (data)=>{
         const state = store.getState();

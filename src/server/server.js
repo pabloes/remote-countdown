@@ -29,12 +29,16 @@ var socketServer = function () {
     //process.exit();
   });
 
+  function getSessionsWhichSocketIsOwner(socketId, sessionCollection){
+    return sessionCollection.filter((session)=>session.owner === socketId);
+  }
+
   function onConnection(socket) {
     var storeSocketAction = store.dispatch(actions.storeSocket(socket));
 
     socket.on('close', ()=>{
       const socketId = storeSocketAction.payload.id;
-      const ownerSessions = store.getState().sessionCollection.filter((session)=>session.owner === socketId);
+      const ownerSessions = getSessionsWhichSocketIsOwner(socketId, store.getState().sessionCollection);
       ownerSessions.forEach((session)=>socketMessageCallbacks.CLOSE_SESSION({
         sessionId:session.id
       }));
@@ -72,6 +76,19 @@ var socketServer = function () {
           initialServerDate: countDownAction.payload.initialServerDate,
           countdown: countDownAction.payload.countdown,
         }));
+
+        const state = store.getState();
+        getSessionsWhichSocketIsOwner(storeSocketAction.payload.id, state.sessionCollection).forEach((session)=>{
+          session.members.forEach((socketId)=>{
+            const memberSocket = state.socketCollection.find(socket=>socket.id === socketId).socket;
+            memberSocket.send(JSON.stringify({
+              command: 'CD',
+              clockId: data.clockId,
+              initialServerDate: countDownAction.payload.initialServerDate,
+              countdown: countDownAction.payload.countdown,
+            }));
+          });
+        });
       },
       CLOSE_SESSION: (data)=>{
         const state = store.getState();

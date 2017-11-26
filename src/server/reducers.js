@@ -26,10 +26,9 @@ module.exports = function (state = { socketCollection: [], sessionCollection: []
       });
       return getExtendedState({
         socketCollection: state.socketCollection.filter(x => x.id !== action.payload.socketId),
-        clocks: _.filter(state.clocks, clock => {
-          const sessionOwnerClocks = _.flatMap(isOwnerOfSessions, (session) => session.clocks);
-          return !!sessionOwnerClocks.find((clockId) => clock.id === clockId);
-        }),//TODO remove clocks from the removed session if it's an owner
+        clocks: _.filter(state.clocks, clock =>
+          !_.flatMap(isOwnerOfSessions, (session) => session.clocks)
+          .find((clockId) => clock.id === clockId)),
         sessionCollection: _.without(state.sessionCollection, ...isOwnerOfSessions)
           .reduce(function (acc, current) {
           //remove session member if it's disconnected socket

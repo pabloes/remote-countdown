@@ -37,7 +37,11 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
   connector.onCommandReceived('CD',
     (countdownData) => {
       const clockIndex = _.findIndex(clocks, { id: countdownData.clockId });
-      clocks[clockIndex] = Object.assign({}, clocks[clockIndex], countdownData, {seconds:countdownData.countdown});
+      clocks[clockIndex] = Object.assign(
+        {},
+        clocks[clockIndex],
+        countdownData,
+        { seconds: countdownData.countdown });
     }
   );
 

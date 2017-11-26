@@ -95,15 +95,22 @@
 </md-toolbar>
         <div layout>
             <div ng-if="godmodoro.getConnectionState().activeSessionId">
-                <clock ng-repeat="clock in godmodoro.getClocks() track by clock.id"
-                       editable="godmodoro.getConnectionState().sessionOwner"
-                       on-countdown="godmodoro.startTimer(clock.id, seconds)"
-                       on-pause="godmodoro.pause(clock.id)"
-                       on-resume="godmodoro.resume(clock.id)"
-                       initial-server-date="clock.initialServerDate"
-                       countdown-data="clock"
-                       pauses="clock.pauses"
-                ></clock>
+                <div ng-repeat="clock in godmodoro.getClocks() track by clock.id">
+                    <span   ng-if="godmodoro.getConnectionState().sessionOwner"
+                            style="text-decoration: underline; cursor:pointer; color:red"
+                            ng-click="godmodoro.deleteClock(clock.id)">DELETE</span>
+                    <clock
+                           editable="godmodoro.getConnectionState().sessionOwner"
+                           on-countdown="godmodoro.startTimer(clock.id, seconds)"
+                           on-pause="godmodoro.pause(clock.id)"
+                           on-resume="godmodoro.resume(clock.id)"
+                           initial-server-date="clock.initialServerDate"
+                           countdown-data="clock"
+                           pauses="clock.pauses"
+                    ></clock>
+
+                </div>
+
                 <md-button flex="20" class="md-raised md-primary"
                            ng-click="godmodoro.addClock()"
                            ng-if="godmodoro.getConnectionState().sessionOwner"

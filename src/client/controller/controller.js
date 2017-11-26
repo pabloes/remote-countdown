@@ -71,7 +71,10 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
   this.getConnectionState = connector.getState;
   this.addClock = () => connector.sendCommand('ADD_CLOCK', { sessionId: this.getConnectionState().activeSessionId });
   this.getClocks = () => clocks;
-
+  this.deleteClock = (clockId) => {
+    clocks = clocks.filter(clock=>clock.id !== clockId);
+    connector.sendCommand('DELETE_CLOCK', { clockId });
+  };
   this.sideClose = () => {
     $mdSidenav('left').close();
   };

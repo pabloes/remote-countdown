@@ -81,7 +81,13 @@ module.exports = function (state = { socketCollection: [], sessionCollection: []
             return acc;
           }, []),
       });
-
+    case 'DELETE_CLOCK':
+      return getExtendedState({
+        clocks: state.clocks.filter((clock)=>clock.id !== action.payload.clockId),
+        sessionCollection: state.sessionCollection.map((session) =>
+          Object.assign({}, session,
+            { clocks: _.without(session.clocks, action.payload.clockId), })),
+      });
     case 'COUNTDOWN':
       return getExtendedState({
         clocks: state.clocks.reduce((acc, clock) => {

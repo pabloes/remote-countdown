@@ -76,10 +76,20 @@ var socketServer = function () {
         const addClockAction = store.dispatch(actions.addClock(data.sessionId));
         socket.send(JSON.stringify({ command: 'ADD_CLOCK', clockId: addClockAction.payload.clockId }));
         const state = store.getState();
+
         getSessionsWhichSocketIsOwner(storeSocketAction.payload.id, state.sessionCollection)
           .forEach((session)=>sendMessageToMemberOfSession(session, {
             command: 'CLOCKS',
             clocks: state.clocks.filter((clock)=>session.clocks.indexOf(clock.id)>=0),
+          }));
+      },
+      DELETE_CLOCK: (data, socket) => {
+        store.dispatch(actions.deleteClock(data.clockId));
+        const state = store.getState();
+        getSessionsWhichSocketIsOwner(storeSocketAction.payload.id, state.sessionCollection)
+          .forEach((session)=>sendMessageToMemberOfSession(session, {
+            command: 'CLOCKS',
+            clocks: state.clocks,
           }));
       },
       ALIVE: ()=>socket.send(JSON.stringify({ command: 'ALIVE'})),//TODO

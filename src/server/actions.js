@@ -58,6 +58,13 @@ function addClock(sessionId) {
   };
 }
 
+function deleteClock(clockId) {
+  return {
+    type: 'DELETE_CLOCK',
+    payload: { clockId },
+  };
+}
+
 function countDown(data){
   return {
     type: 'COUNTDOWN',
@@ -76,5 +83,6 @@ module.exports = {
   joinSession,
   closeSession,
   addClock,
+  deleteClock,
   countDown,
 };

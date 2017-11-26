@@ -33,10 +33,15 @@ var socketServer = function () {
     var storeSocketAction = store.dispatch(actions.storeSocket(socket));
 
     socket.on('close', ()=>{
-        store.dispatch(actions.removeSocket(storeSocketAction.payload.id));
+      const socketId = storeSocketAction.payload.id;
+      const ownerSessions = store.getState().sessionCollection.filter((session)=>session.owner === socketId);
+      ownerSessions.forEach((session)=>socketMessageCallbacks.CLOSE_SESSION({
+        sessionId:session.id
+      }));
+      store.dispatch(actions.removeSocket(socketId));
     });
     socket.on('disconnect', function () {
-     console.log('disconnect!!!!!!!!!!!!')
+     console.log('disconnect!!!!!!!!!!!!');
     });
     const socketMessageCallbacks = {
       CREATE: (data, socket) => {
@@ -68,13 +73,20 @@ var socketServer = function () {
           countdown: countDownAction.payload.countdown,
         }));
       },
-      CLOSE_SESSION: ()=>{
-        const closeSessionActions = store.dispatch(actions.closeSession(data.sessionId));
-        /*TODO old:
-         sendToMembersOfMySession(socket, messageData);
-         cleanSessionIdJoinedSockets(socket.sessionId);
-         socket.pauses = [];
-         */
+      CLOSE_SESSION: (data)=>{
+        const state = store.getState();
+        const session = state.sessionCollection
+          .find((session)=>session.id === data.sessionId);
+
+        session.members.forEach((socketId)=>{
+          state.socketCollection.find(item=>item.id===socketId).socket
+            .send(JSON.stringify({
+              command: 'CLOSE_SESSION',
+              sessionId: data.sessionId,
+            }))
+        });
+
+        store.dispatch(actions.closeSession(data.sessionId));
       },
       LEAVE_SESSION: ()=>{
         /*TODO OLD:

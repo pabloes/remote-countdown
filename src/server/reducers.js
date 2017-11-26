@@ -1,6 +1,7 @@
 //followind not working (--harmony?)
 //return {...state, socketCollection: [...socketCollection, action.payload.socket]});
 var _ = require('lodash');
+
 //TODO unit tests would be good
 module.exports = function (state = { socketCollection: [], sessionCollection: [], clocks: [] }, action) {
   switch (action.type) {
@@ -17,16 +18,20 @@ module.exports = function (state = { socketCollection: [], sessionCollection: []
     case 'REMOVE_SOCKET':
 
       //TODO if socket is member of any session, remove the socketId from members
-
+      const isOwnerOfSessions = [];
+      state.sessionCollection.forEach((session) => {
+        if (action.payload.socketId === session.owner) {
+          isOwnerOfSessions.push(session);
+        }
+      });
       return getExtendedState({
         socketCollection: state.socketCollection.filter(x => x.id !== action.payload.socketId),
-        sessionCollection: state.sessionCollection.reduce(function (acc, current) {
-
-          //remove the session if owner disconnects
-          if (current.owner !== action.payload.socketId) acc.push(current);
-          return acc;
-        }, []).reduce(function (acc, current) {
-
+        clocks: _.filter(state.clocks, clock => {
+          const sessionOwnerClocks = _.flatMap(isOwnerOfSessions, (session) => session.clocks);
+          return !!sessionOwnerClocks.find((clockId) => clock.id === clockId);
+        }),//TODO remove clocks from the removed session if it's an owner
+        sessionCollection: _.without(state.sessionCollection, ...isOwnerOfSessions)
+          .reduce(function (acc, current) {
           //remove session member if it's disconnected socket
           if (current.members.indexOf(action.payload.socketId) >= 0) {
             current.members = _.without(current.members, action.payload.socketId);
@@ -35,6 +40,7 @@ module.exports = function (state = { socketCollection: [], sessionCollection: []
           acc.push(current);
           return acc;
         }, []),
+
       });
 
     case 'CREATE_SESSION':
@@ -49,7 +55,7 @@ module.exports = function (state = { socketCollection: [], sessionCollection: []
 
     case 'JOIN_SESSION':
 
-      //TODO caution, we are modifying, not returning a new one, is that a problem for redux?
+      //TODO we are modifying, not returning a new one, is that a problem for redux?
       var sessionIndex = _.findIndex(state.sessionCollection, { id: action.payload.sessionId });
       state.sessionCollection[sessionIndex].members.push(action.payload.socketId);
 
@@ -57,13 +63,14 @@ module.exports = function (state = { socketCollection: [], sessionCollection: []
     case 'CLOSE_SESSION':
       return getExtendedState({
         sessionCollection: _.without(state.sessionCollection, { id: action.payload.sessionId }),
+        clocks: state.clocks.filter(clock=>clock.sessionId === action.payload.sessionId)
       });
 
     case 'ADD_CLOCK':
       return getExtendedState({
         clocks: state.clocks.concat([{
-          id:action.payload.clockId,
-          pauses:[],
+          id: action.payload.clockId,
+          pauses: [],
           initialServerDate: null,
           countdown: null,
         }]),
@@ -86,7 +93,7 @@ module.exports = function (state = { socketCollection: [], sessionCollection: []
 
           return acc;
         }, []),
-      })
+      });
     default:
       return state;
   }

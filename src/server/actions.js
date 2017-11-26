@@ -24,9 +24,9 @@ function createSession(sessionId, owner){
     type: 'CREATE_SESSION',
     payload: {
       sessionId: sessionId || _.uniqueId('SESSION_'),
-      owner
-    }
-  }
+      owner,
+    },
+  };
 }
 
 function joinSession(sessionId, socketId) {
@@ -62,9 +62,9 @@ function countDown(data){
   return {
     type: 'COUNTDOWN',
     payload: {
-      id:data.clockId,
-      initialServerDate:new Date(),
-      countdown:data.seconds,
+      id: data.clockId,
+      initialServerDate: new Date(),
+      countdown: data.seconds,
     },
   };
 }

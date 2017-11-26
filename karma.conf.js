@@ -4,11 +4,13 @@ module.exports = function(config) {
         // ... normal karma configuration
         basePath:'',
         files: [
-            'src/client/**/*.spec.js'
+            'src/client/**/*.spec.js',
+            'src/server/**/*.spec.js'
         ],
         browsers: ['Chrome'],
         preprocessors: {
-            "src/client/**/*.js": ['webpack']
+            "src/client/**/*.js": ['webpack'],
+            "src/server/**/*.js": ['webpack']
         },
         webpack: {
             resolve: {

@@ -105,14 +105,14 @@ function connectAsyncMiddleware(host, $q, commandReceivedCallbacks) {
     ws.onopen = () => {
       defer.resolve({ socket: ws, onDisconnect:setDisconnectCallback });
       dispatch(connectionSuccess(host, ws));
-
+      const timeAlive = Math.floor(Math.random()*20000);
       //TODO heroku sockets workaround to be improved
       aliveInterval = setInterval(()=>{
         ws.send(JSON.stringify({
           command:'ALIVE',
           value:Math.floor(Math.random()*1000)
         }));
-      }, Math.floor(Math.random()*20000));
+      }, timeAlive);
     };
 
     ws.onclose = () => {
@@ -123,6 +123,7 @@ function connectAsyncMiddleware(host, $q, commandReceivedCallbacks) {
 
     ws.onerror = function (event) {
       defer.reject(event);
+      clearInterval(aliveInterval);
     };
 
     ws.onmessage = function (response) {

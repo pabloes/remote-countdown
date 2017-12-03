@@ -1,0 +1,30 @@
+Server store
+
+-socketCollection:[
+    {
+        -socket:Socket
+        -id:String //NOT NECESSARY?
+        -ip:String
+    },
+]
+-sessionCollection:[
+    {
+        id:string
+        -owner:socketId
+        -members:[socketId],
+        clocks:[id,]
+    }
+]
+
+clocks:[{
+
+                                      id:Number,//server clockId ? -> TODO yes, ask for clock id when create session
+                                      name:String,
+                                      pauses:[{
+                                                  pauseDate,
+                                                  resumeDate
+                                              }]
+                                      initialDate:Date
+                                      timeZoneOffset:number|string //NOT NECESSARY?
+                                      countdownSeconds:Number
+                                  }]

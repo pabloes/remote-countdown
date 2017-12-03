@@ -106,6 +106,7 @@
                            on-resume="godmodoro.resume(clock.id)"
                            initial-server-date="clock.initialServerDate"
                            countdown-data="clock"
+
                            pauses="clock.pauses"
                     ></clock>
 
@@ -117,6 +118,9 @@
                 >
                     Add clock
                 </md-button>
+                <input flex="80"
+                       ng-if="godmodoro.getConnectionState().sessionOwner"
+                       ng-model="godmodoro.newClock.name" placeholder="clock name" style="height: 36px; border:none" type="text" class="rc-time-input md-whiteframe-1dp" />
             </div>
         </div>
 

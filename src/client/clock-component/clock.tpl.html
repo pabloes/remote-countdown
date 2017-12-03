@@ -1,4 +1,5 @@
 <div layout="column" class="clock-component">
+    <span ng-bind="clock.countdownData.name"></span>
     <div class="clock" ng-bind="clock.timeString"
          ng-class="{blink: clock.differenceInSeconds < 0}"
          ng-style="{color:clock.getTimeColor()}">

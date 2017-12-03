@@ -69,6 +69,7 @@ module.exports = function (state = { socketCollection: [], sessionCollection: []
       return getExtendedState({
         clocks: state.clocks.concat([{
           id: action.payload.clockId,
+          name: action.payload.clockName,
           pauses: [],
           initialServerDate: null,
           countdown: null,

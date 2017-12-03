@@ -74,8 +74,8 @@ var socketServer = function () {
         socket.send(JSON.stringify({ command: 'JOIN_SUCCESS', sessionId:joinSessionAction.payload.sessionId, clocks: sessionClocks }));
       },
       ADD_CLOCK: (data, socket) => {
-        const addClockAction = store.dispatch(actions.addClock(data.sessionId));
-        socket.send(JSON.stringify({ command: 'ADD_CLOCK', clockId: addClockAction.payload.clockId }));
+        const addClockAction = store.dispatch(actions.addClock(data.sessionId, data.clockName));
+        socket.send(JSON.stringify({ command: 'ADD_CLOCK', clockId: addClockAction.payload.clockId, clockName:addClockAction.payload.clockName }));
         const state = store.getState();
 
         getSessionsWhichSocketIsOwner(storeSocketAction.payload.id, state.sessionCollection)

@@ -48,12 +48,13 @@ function closeSession(sessionId) {
   };
 }
 
-function addClock(sessionId) {
+function addClock(sessionId, clockName) {
   return {
     type: 'ADD_CLOCK',
     payload: {
       sessionId: sessionId,
       clockId: _.uniqueId('clock_'),
+      clockName,
     },
   };
 }

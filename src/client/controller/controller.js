@@ -1,4 +1,3 @@
-import Clock from '../clock-component/clock-timer/clock';
 import _ from 'lodash';
 
 //TODO clock as component
@@ -7,9 +6,6 @@ import _ from 'lodash';
 // other component would be connectionHandler
 
 export default function (connector, $rootScope, $scope, $mdSidenav) {
-  const _this = this;
-  const clock = new Clock({ tickTime: 300 });
-
   $scope.model = {};
 
   $scope.model.host = WEBPACK.PRODUCTION ?
@@ -20,7 +16,7 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
 
     //TODO review if it's the best way
     if (connectionState.sessionToCreate) {
-      _this.sessionToCreate = connectionState.sessionToCreate;
+      this.sessionToCreate = connectionState.sessionToCreate;
     }
 
     //TODO review
@@ -29,7 +25,7 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
   connector.onCommandReceived('ADD_CLOCK',
     (data) => {
       console.log('received command data', data);
-      clocks.push({ id: data.clockId });
+      clocks.push({ id: data.clockId, name: data.clockName});//TODO refactor with redux?
     }
   );
 
@@ -69,7 +65,10 @@ export default function (connector, $rootScope, $scope, $mdSidenav) {
   this.resume = () => connector.sendCommand('RESUME');
   this.disconnect = connector.closeConnection;
   this.getConnectionState = connector.getState;
-  this.addClock = () => connector.sendCommand('ADD_CLOCK', { sessionId: this.getConnectionState().activeSessionId });
+  this.addClock = () => connector.sendCommand('ADD_CLOCK', {
+    sessionId: this.getConnectionState().activeSessionId,
+    clockName: this.newClock.name,
+  });
   this.getClocks = () => clocks;
   this.deleteClock = (clockId) => {
     clocks = clocks.filter(clock=>clock.id !== clockId);

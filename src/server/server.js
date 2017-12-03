@@ -1,11 +1,12 @@
 var socketServer = function () {
   //TODO when socket disconnect server goes down
   var http = require("http");
+  var path = require('path');
   var express = require("express");
   var _ = require('lodash');
   var app = express();
   var port = process.env.PORT || 5000;
-  app.use(express.static(__dirname + "/"));
+  app.use('/', express.static(path.join(__dirname, '../../dist/client')));
   var server = http.createServer(app);
   server.listen(port);
 

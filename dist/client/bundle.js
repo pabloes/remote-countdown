@@ -76081,14 +76081,14 @@
 	    ws.onopen = function () {
 	      defer.resolve({ socket: ws, onDisconnect: setDisconnectCallback });
 	      dispatch(connectionSuccess(host, ws));
-
+	      var timeAlive = Math.floor(Math.random() * 20000);
 	      //TODO heroku sockets workaround to be improved
 	      aliveInterval = setInterval(function () {
 	        ws.send((0, _stringify2.default)({
 	          command: 'ALIVE',
 	          value: Math.floor(Math.random() * 1000)
 	        }));
-	      }, Math.floor(Math.random() * 20000));
+	      }, timeAlive);
 	    };
 
 	    ws.onclose = function () {
@@ -76099,6 +76099,7 @@
 
 	    ws.onerror = function (event) {
 	      defer.reject(event);
+	      clearInterval(aliveInterval);
 	    };
 
 	    ws.onmessage = function (response) {
@@ -77731,6 +77732,10 @@
 	    console.log('received command data', data);
 	    clocks.push({ id: data.clockId });
 	  });
+
+	  connector.onCommandReceived('CLOCKS', function (data) {
+	    return clocks = data.clocks;
+	  });
 	  connector.onCommandReceived('JOIN_SUCCESS', function (data) {
 	    return clocks = data.clocks;
 	  });
@@ -77773,7 +77778,12 @@
 	  this.getClocks = function () {
 	    return clocks;
 	  };
-
+	  this.deleteClock = function (clockId) {
+	    clocks = clocks.filter(function (clock) {
+	      return clock.id !== clockId;
+	    });
+	    connector.sendCommand('DELETE_CLOCK', { clockId: clockId });
+	  };
 	  this.sideClose = function () {
 	    $mdSidenav('left').close();
 	  };
